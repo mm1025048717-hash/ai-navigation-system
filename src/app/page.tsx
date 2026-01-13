@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { RealScreen } from "@/components/RealScreen";
 import { DemoIDE } from "@/components/demos/DemoIDE";
 import { DemoReddit } from "@/components/demos/DemoReddit";
 import { DemoFigma } from "@/components/demos/DemoFigma";
@@ -67,18 +66,20 @@ export default function Home() {
   };
 
   return (
-    <main className="flex h-screen w-screen overflow-hidden bg-[#E8E8ED] select-none">
-      {/* 左侧屏幕区域 */}
-      <div className="relative flex-1 h-full p-4">
-        {isElectron ? (
-          <RealScreen isElectron={true} fps={2} />
-        ) : (
-          renderDemo()
-        )}
+    <main className="flex h-screen w-screen overflow-hidden select-none" style={{ backgroundColor: isElectron ? 'transparent' : '#E8E8ED' }}>
+      {/* 左侧屏幕区域 - Electron 模式下完全透明 */}
+      <div 
+        className="relative flex-1 h-full"
+        style={isElectron ? { 
+          pointerEvents: 'none',
+          backgroundColor: 'transparent'
+        } : { padding: '1rem' }}
+      >
+        {!isElectron && renderDemo()}
       </div>
 
       {/* 右侧侧边栏 */}
-      <aside ref={sidebarRef} className="w-[380px] h-full z-20 shrink-0 p-6 pl-0">
+      <aside ref={sidebarRef} className="w-[380px] h-full z-20 shrink-0 p-6 pl-0" style={{ pointerEvents: 'auto' }}>
         <Sidebar 
           onStartGuidance={() => {
             setIsGuidanceActive(true);
