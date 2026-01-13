@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface DemoRedditProps {
   currentStep: number;
@@ -15,15 +16,13 @@ interface DemoRedditProps {
 export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId, generatedSteps = [], totalSteps = 4 }: DemoRedditProps) => {
   const isAdvanced = taskType === "advanced";
   const isGainFollowers = taskId === "gain-followers";
+  const [selectedSort, setSelectedSort] = useState("Hot");
   
   // 根据步骤内容动态确定可点击元素
   const getStepTarget = (stepIndex: number) => {
     if (!isAdvanced || !generatedSteps.length) {
-      // 基础任务：固定 4 步
       return stepIndex;
     }
-    
-    // 复杂任务：根据步骤内容映射
     const stepText = generatedSteps[stepIndex - 1]?.toLowerCase() || "";
     if (stepText.includes("社区") || stepText.includes("选择") || stepText.includes("垂直")) return 1;
     if (stepText.includes("发布") || stepText.includes("内容") || stepText.includes("原创")) return 2;
@@ -32,6 +31,63 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
     if (stepText.includes("品牌") || stepText.includes("持续") || stepText.includes("建立")) return 5;
     return Math.min(stepIndex, 6);
   };
+  
+  const posts = [
+    {
+      id: 1,
+      title: isGainFollowers 
+        ? "How I Gained 1000 Followers in 3 Months: A Complete Reddit Strategy Guide"
+        : "AI-Powered Code Navigation is the Future of Development",
+      author: isGainFollowers ? "u/your_username" : "u/developer_alex",
+      subreddit: "r/programming",
+      time: isGainFollowers ? "2h" : "3h",
+      upvotes: 2400,
+      comments: isGainFollowers ? 1200 : 324,
+      awards: 12,
+      isUserPost: isGainFollowers,
+    },
+    {
+      id: 2,
+      title: "Show HN: Built an AI that watches your screen and guides you",
+      author: "u/tech_insider",
+      subreddit: "r/programming",
+      time: "5h",
+      upvotes: 891,
+      comments: 156,
+      awards: 5,
+    },
+    {
+      id: 3,
+      title: isGainFollowers ? "Daily Engagement Thread: Share Your Latest Project!" : "TypeScript 5.0 Released with Major Performance Improvements",
+      author: isGainFollowers ? "u/your_username" : "u/typescript_team",
+      subreddit: "r/programming",
+      time: isGainFollowers ? "1d" : "8h",
+      upvotes: isGainFollowers ? 3100 : 1245,
+      comments: isGainFollowers ? 847 : 289,
+      awards: isGainFollowers ? 8 : 15,
+      isUserPost: isGainFollowers,
+    },
+    {
+      id: 4,
+      title: "The Complete Guide to React Server Components",
+      author: "u/react_expert",
+      subreddit: "r/programming",
+      time: "12h",
+      upvotes: 567,
+      comments: 98,
+      awards: 3,
+    },
+    {
+      id: 5,
+      title: "Why I Switched from Python to Rust for My Next Project",
+      author: "u/rust_enthusiast",
+      subreddit: "r/programming",
+      time: "1d",
+      upvotes: 423,
+      comments: 67,
+      awards: 2,
+    },
+  ];
   
   return (
     <div className="h-full bg-[#0E0E0F] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
@@ -47,214 +103,312 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
         </div>
       </div>
 
-      {/* Reddit Header */}
+      {/* Reddit 主导航栏 */}
       <div className="h-12 bg-[#1A1A1B] flex items-center px-4 gap-4 border-b border-[#343536]">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-[14px]">r/</div>
-          <span className="text-white font-bold text-[14px]">r/programming</span>
+        {/* Reddit Logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-[14px]">
+            r/
+          </div>
+          <span className="text-white font-bold text-[14px]">reddit</span>
         </div>
-        <div className="ml-auto flex items-center gap-3">
-          {/* Create Post - Step 1 (基础任务) 或 选择社区 (复杂任务) */}
+
+        {/* 搜索框 */}
+        <div className="flex-1 max-w-2xl mx-4">
+          <div className="h-9 bg-[#272729] rounded-full flex items-center px-4 gap-2 hover:bg-[#343536] transition-colors cursor-pointer">
+            <span className="text-gray-400 text-[12px]">🔍 Search Reddit</span>
+          </div>
+        </div>
+
+        {/* 右侧操作区 */}
+        <div className="flex items-center gap-2">
+          {/* Create Post - Step 1 */}
           <button 
             onClick={() => {
-              const targetStep = isAdvanced ? getStepTarget(1) : 1;
               if (isActive && (currentStep === 1 || (isAdvanced && getStepTarget(currentStep) === 1))) {
                 onStepClick(1);
               }
             }}
-            className={`px-4 py-1.5 bg-white text-[#1A1A1B] rounded-full text-[12px] font-bold transition-all cursor-pointer ${
+            className={`px-4 py-1.5 rounded-full text-[12px] font-bold transition-all cursor-pointer ${
               isActive && (currentStep === 1 || (isAdvanced && getStepTarget(currentStep) === 1))
                 ? "ring-2 ring-[#007AFF] ring-offset-2 ring-offset-[#1A1A1B] animate-pulse bg-[#007AFF] text-white" 
-                : "hover:bg-gray-200"
+                : "bg-white text-[#1A1A1B] hover:bg-gray-200"
             }`}
           >
             {isAdvanced && isGainFollowers ? "选择社区" : "+ Create Post"}
           </button>
+          {/* 用户头像 */}
+          <div className="w-8 h-8 rounded-full bg-[#FF4500] flex items-center justify-center text-white font-bold text-[12px] cursor-pointer hover:opacity-80">
+            U
+          </div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* 主内容区域 */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Main Feed */}
-        <div className="flex-1 p-4 overflow-auto space-y-3">
-          {/* Post 1 - Step 2 (发布内容) */}
-          <div 
-            onClick={() => {
-              const targetStep = isAdvanced ? getStepTarget(2) : 2;
-              if (isActive && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2))) {
-                onStepClick(2);
-              }
-            }}
-            className={`bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] transition-all cursor-pointer ${
-              isActive && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2))
-                ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse" 
-                : "hover:border-[#545456]"
-            }`}
-          >
-            <div className="flex gap-3">
-              <div className="flex flex-col items-center gap-1 text-gray-400">
-                <button className="hover:text-[#FF4500] transition-colors">▲</button>
-                <span className="text-[12px] font-bold text-white">2.4k</span>
-                <button className="hover:text-blue-400 transition-colors">▼</button>
-              </div>
-              <div className="flex-1">
-                <div className="text-[10px] text-gray-500 mb-1">
-                  Posted by {isGainFollowers ? "u/your_username" : "u/developer_alex"} • {isGainFollowers ? "2h" : "3h"}
-                </div>
-                <h3 className="text-white font-medium text-[15px] mb-2">
-                  {isGainFollowers 
-                    ? "How I Gained 1000 Followers in 3 Months: A Complete Reddit Strategy Guide"
-                    : "AI-Powered Code Navigation is the Future of Development"}
-                </h3>
-                <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                  {/* Comment - Step 3 (互动评论) */}
-                  <span 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
-                      const targetStep = isAdvanced ? getStepTarget(3) : 3;
-                      if (isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))) {
-                        onStepClick(3);
-                      }
-                    }}
-                    className={`flex items-center gap-1 cursor-pointer transition-all ${
-                      isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))
-                        ? "text-[#007AFF] font-bold bg-[#007AFF]/20 px-2 py-1 rounded animate-pulse" 
-                        : "hover:text-white"
-                    }`}
-                  >
-                    💬 {isGainFollowers ? "1.2k" : "324"} Comments
-                  </span>
-                  <span className="hover:text-white cursor-pointer">🔗 Share</span>
-                  <span className="hover:text-white cursor-pointer">⭐ Save</span>
-                </div>
-              </div>
+        {/* 左侧导航栏 */}
+        <div className="w-64 bg-[#1A1A1B] border-r border-[#343536] p-3 hidden lg:block">
+          <div className="space-y-1">
+            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>🏠</span> Home
+            </div>
+            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>🔥</span> Popular
+            </div>
+            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>🌐</span> All
+            </div>
+            <div className="h-px bg-[#343536] my-2" />
+            <div className="px-3 py-2 text-[#FF4500] text-[13px] font-bold hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>📁</span> r/programming
+            </div>
+            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>💬</span> r/webdev
+            </div>
+            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>💻</span> r/javascript
+            </div>
+            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+              <span>🐍</span> r/Python
+            </div>
+          </div>
+        </div>
+
+        {/* 主内容区 */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* 排序栏 */}
+          <div className="h-12 bg-[#1A1A1B] border-b border-[#343536] flex items-center px-4 gap-4">
+            <div className="flex items-center gap-2">
+              {["Hot", "New", "Top", "Rising"].map((sort) => (
+                <button
+                  key={sort}
+                  onClick={() => setSelectedSort(sort)}
+                  className={`px-3 py-1.5 rounded-full text-[12px] font-bold transition-all ${
+                    selectedSort === sort
+                      ? "bg-[#272729] text-white"
+                      : "text-gray-400 hover:text-white hover:bg-[#272729]"
+                  }`}
+                >
+                  {sort}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Post 2 */}
-          <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] hover:border-[#545456] cursor-pointer">
-            <div className="flex gap-3">
-              <div className="flex flex-col items-center gap-1 text-gray-400">
-                <button className="hover:text-[#FF4500] transition-colors">▲</button>
-                <span className="text-[12px] font-bold text-white">891</span>
-                <button className="hover:text-blue-400 transition-colors">▼</button>
-              </div>
-              <div className="flex-1">
-                <div className="text-[10px] text-gray-500 mb-1">Posted by u/tech_insider • 5h</div>
-                <h3 className="text-white font-medium text-[15px] mb-2">Show HN: Built an AI that watches your screen and guides you</h3>
-                <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                  <span>💬 156 Comments</span>
-                  <span>🔗 Share</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {isGainFollowers && (
-            <>
-              {/* Post 3 - Advanced Strategy */}
-              <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] hover:border-[#545456] cursor-pointer">
-                <div className="flex gap-3">
-                  <div className="flex flex-col items-center gap-1 text-gray-400">
-                    <button className="hover:text-[#FF4500] transition-colors">▲</button>
-                    <span className="text-[12px] font-bold text-white">3.1k</span>
-                    <button className="hover:text-blue-400 transition-colors">▼</button>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[10px] text-gray-500 mb-1">Posted by u/your_username • 1d</div>
-                    <h3 className="text-white font-medium text-[15px] mb-2">Daily Engagement Thread: Share Your Latest Project!</h3>
-                    <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                      <span>💬 847 Comments</span>
-                      <span>🔗 Share</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 数据分析区域 - Step 4/5 (分析数据优化) */}
-              {(currentStep === 4 || currentStep === 5) && isActive && (
-                <div 
+          {/* 帖子列表 */}
+          <div className="flex-1 overflow-auto p-4 space-y-3">
+            {posts.map((post, index) => {
+              const isTargetPost = (index === 0 && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2))) ||
+                                   (index === 2 && isGainFollowers && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2)));
+              
+              return (
+                <div
+                  key={post.id}
                   onClick={() => {
-                    if (isActive && (currentStep === 4 || currentStep === 5)) {
-                      onStepClick(currentStep);
+                    if (isActive && isTargetPost) {
+                      onStepClick(2);
                     }
                   }}
                   className={`bg-[#1A1A1B] rounded-lg p-4 border transition-all cursor-pointer ${
-                    isActive && (currentStep === 4 || currentStep === 5)
+                    isActive && isTargetPost
                       ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse border-[#007AFF]" 
                       : "border-[#343536] hover:border-[#545456]"
                   }`}
                 >
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[#007AFF] text-lg">📊</span>
-                    <h4 className="text-white font-bold text-[14px]">数据分析中心</h4>
-                  </div>
-                  <div className="space-y-2 text-[12px] text-gray-400">
-                    <div>最佳发布时间: 14:00 - 18:00</div>
-                    <div>平均互动率: 12.3% ↑</div>
-                    <div>热门话题: #AI #Programming #WebDev</div>
+                  <div className="flex gap-3">
+                    {/* 投票按钮 */}
+                    <div className="flex flex-col items-center gap-1 text-gray-400">
+                      <button className="hover:text-[#FF4500] transition-colors text-[16px]">▲</button>
+                      <span className="text-[12px] font-bold text-white">{post.upvotes > 1000 ? `${(post.upvotes / 1000).toFixed(1)}k` : post.upvotes}</span>
+                      <button className="hover:text-blue-400 transition-colors text-[16px]">▼</button>
+                    </div>
+                    
+                    {/* 帖子内容 */}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] text-gray-500">{post.subreddit}</span>
+                        <span className="text-[10px] text-gray-500">•</span>
+                        <span className="text-[10px] text-gray-500">Posted by {post.author}</span>
+                        <span className="text-[10px] text-gray-500">•</span>
+                        <span className="text-[10px] text-gray-500">{post.time}</span>
+                        {post.isUserPost && (
+                          <span className="px-1.5 py-0.5 bg-[#FF4500]/20 text-[#FF4500] text-[9px] font-bold rounded">YOU</span>
+                        )}
+                      </div>
+                      <h3 className="text-white font-medium text-[15px] mb-2 hover:text-[#FF4500] cursor-pointer">
+                        {post.title}
+                      </h3>
+                      <div className="flex items-center gap-4 text-[11px] text-gray-400">
+                        {/* Comment - Step 3 */}
+                        <span 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            if (isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))) {
+                              onStepClick(3);
+                            }
+                          }}
+                          className={`flex items-center gap-1 cursor-pointer transition-all ${
+                            isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))
+                              ? "text-[#007AFF] font-bold bg-[#007AFF]/20 px-2 py-1 rounded animate-pulse" 
+                              : "hover:text-white"
+                          }`}
+                        >
+                          💬 {post.comments > 1000 ? `${(post.comments / 1000).toFixed(1)}k` : post.comments} Comments
+                        </span>
+                        <span className="hover:text-white cursor-pointer">🔗 Share</span>
+                        <span className="hover:text-white cursor-pointer">⭐ Save</span>
+                        <span className="hover:text-white cursor-pointer">🏆 {post.awards} Awards</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-            </>
-          )}
+              );
+            })}
+
+            {/* 数据分析区域 - Step 4/5 (复杂任务) */}
+            {isGainFollowers && (currentStep === 4 || currentStep === 5) && isActive && (
+              <div 
+                onClick={() => {
+                  if (isActive && (currentStep === 4 || currentStep === 5)) {
+                    onStepClick(currentStep);
+                  }
+                }}
+                className={`bg-[#1A1A1B] rounded-lg p-4 border transition-all cursor-pointer ${
+                  isActive && (currentStep === 4 || currentStep === 5)
+                    ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse border-[#007AFF]" 
+                    : "border-[#343536] hover:border-[#545456]"
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[#007AFF] text-lg">📊</span>
+                  <h4 className="text-white font-bold text-[14px]">数据分析中心</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-[12px]">
+                  <div className="space-y-1">
+                    <div className="text-gray-400">最佳发布时间</div>
+                    <div className="text-white font-bold">14:00 - 18:00</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-gray-400">平均互动率</div>
+                    <div className="text-[#34C759] font-bold">12.3% ↑</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-gray-400">热门话题</div>
+                    <div className="text-white font-bold">#AI #Programming</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-gray-400">内容类型</div>
+                    <div className="text-white font-bold">技术分享 60%</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Sidebar - Step 4/5/6 (数据分析/社区信息) */}
-        <div className="w-72 p-4 border-l border-[#343536] hidden lg:block">
+        {/* 右侧边栏 */}
+        <div className="w-80 p-4 border-l border-[#343536] hidden xl:block overflow-auto">
+          {/* 社区信息卡片 - Step 4/5/6 */}
           <div 
             onClick={() => {
-              // 对于复杂任务，步骤 4-6 都可能点击这里
-              const targetStep = isAdvanced ? getStepTarget(currentStep) : 4;
               if (isActive && (currentStep === 4 || (isAdvanced && (currentStep >= 4 && currentStep <= totalSteps)))) {
                 onStepClick(currentStep);
               }
             }}
-            className={`bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] transition-all cursor-pointer ${
+            className={`bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] transition-all cursor-pointer mb-4 ${
               isActive && (currentStep === 4 || (isAdvanced && (currentStep >= 4 && currentStep <= totalSteps)))
                 ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse" 
                 : "hover:border-[#545456]"
             }`}
           >
-            <h4 className="text-white font-bold text-[14px] mb-2">About Community</h4>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 bg-[#FF4500] rounded-full flex items-center justify-center text-white font-bold text-[16px]">
+                r/
+              </div>
+              <div>
+                <h4 className="text-white font-bold text-[14px]">r/programming</h4>
+                <p className="text-gray-400 text-[11px]">r/programming</p>
+              </div>
+            </div>
             <p className="text-gray-400 text-[12px] mb-3">Computer Programming discussion and news</p>
             <div className="text-[12px] text-gray-400 space-y-1 mb-3">
-              <div>👥 5.2m Members</div>
-              <div>🟢 12.3k Online</div>
+              <div className="flex justify-between">
+                <span>👥 Members</span>
+                <span className="text-white font-bold">5.2m</span>
+              </div>
+              <div className="flex justify-between">
+                <span>🟢 Online</span>
+                <span className="text-white font-bold">12.3k</span>
+              </div>
+              <div className="flex justify-between">
+                <span>📅 Created</span>
+                <span className="text-white">Jan 2008</span>
+              </div>
             </div>
             {isGainFollowers && (
-              <div className="mb-3 p-2 bg-[#FF4500]/10 border border-[#FF4500]/30 rounded text-[11px] text-[#FF4500]">
-                <div className="font-bold mb-1">📈 Your Growth</div>
-                <div>Followers: 847/1000</div>
-                <div className="mt-1 h-1.5 bg-[#343536] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#FF4500] rounded-full" style={{ width: '84.7%' }} />
+              <div className="mb-3 p-3 bg-[#FF4500]/10 border border-[#FF4500]/30 rounded-lg">
+                <div className="text-[#FF4500] font-bold text-[12px] mb-2">📈 Your Growth</div>
+                <div className="text-white text-[14px] font-bold mb-1">Followers: 847/1000</div>
+                <div className="h-2 bg-[#343536] rounded-full overflow-hidden">
+                  <div className="h-full bg-[#FF4500] rounded-full transition-all" style={{ width: '84.7%' }} />
                 </div>
+                <div className="text-gray-400 text-[10px] mt-1">153 more to reach your goal!</div>
               </div>
             )}
-            <button className="w-full mt-3 py-2 bg-[#FF4500] text-white rounded-full text-[12px] font-bold hover:bg-[#FF5722] transition-colors">
+            <button className={`w-full mt-3 py-2 rounded-full text-[12px] font-bold transition-colors ${
+              isGainFollowers 
+                ? "bg-[#343536] text-white hover:bg-[#3C3C3C]" 
+                : "bg-[#FF4500] text-white hover:bg-[#FF5722]"
+            }`}>
               {isGainFollowers ? "Joined ✓" : "Join"}
             </button>
+          </div>
+
+          {/* 推荐社区 */}
+          <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] mb-4">
+            <h4 className="text-white font-bold text-[13px] mb-3">Popular Communities</h4>
+            <div className="space-y-2">
+              {["r/webdev", "r/javascript", "r/Python", "r/reactjs"].map((sub) => (
+                <div key={sub} className="flex items-center gap-2 cursor-pointer hover:bg-[#272729] p-2 rounded">
+                  <div className="w-6 h-6 bg-[#FF4500] rounded-full flex items-center justify-center text-white text-[10px] font-bold">
+                    r/
+                  </div>
+                  <span className="text-white text-[12px] font-medium">{sub}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 广告/推广 */}
+          <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536]">
+            <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2">Promoted</div>
+            <div className="bg-gradient-to-br from-[#FF4500] to-[#FF5722] rounded-lg p-3 text-white">
+              <div className="text-[12px] font-bold mb-1">Reddit Premium</div>
+              <div className="text-[10px] opacity-90">Ad-free experience & more</div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 引导提示标签 */}
-      {isActive && currentStep > 0 && currentStep <= 4 && (
-        <StepLabel step={currentStep} />
+      {isActive && currentStep > 0 && currentStep <= totalSteps && (
+        <StepLabel step={currentStep} totalSteps={totalSteps} />
       )}
     </div>
   );
 };
 
-const StepLabel = ({ step }: { step: number }) => {
+const StepLabel = ({ step, totalSteps }: { step: number; totalSteps: number }) => {
   const labels: Record<number, { top: string; left: string; text: string }> = {
     1: { top: "58px", left: "calc(100% - 200px)", text: "点击此按钮" },
     2: { top: "140px", left: "50px", text: "点击此帖子" },
     3: { top: "255px", left: "120px", text: "点击评论" },
-    4: { top: "140px", left: "calc(100% - 260px)", text: "点击此卡片" },
+    4: { top: "140px", left: "calc(100% - 300px)", text: "点击此卡片" },
+    5: { top: "140px", left: "calc(100% - 300px)", text: "查看数据分析" },
+    6: { top: "140px", left: "calc(100% - 300px)", text: "完成引导" },
   };
 
-  const label = labels[step];
+  const label = labels[step] || labels[4];
   if (!label) return null;
 
   return (
