@@ -8,10 +8,14 @@ import { DemoFigma } from "@/components/demos/DemoFigma";
 
 type DemoType = "ide" | "reddit" | "figma";
 
+type TaskType = "basic" | "advanced";
+
 export default function Home() {
   const [isGuidanceActive, setIsGuidanceActive] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [currentDemo, setCurrentDemo] = useState<DemoType>("ide");
+  const [taskType, setTaskType] = useState<TaskType>("basic");
+  const [taskId, setTaskId] = useState<string | undefined>(undefined);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isElectron, setIsElectron] = useState(false);
 
@@ -53,6 +57,8 @@ export default function Home() {
       currentStep,
       isActive: isGuidanceActive,
       onStepClick: handleStepClick,
+      taskType,
+      taskId,
     };
     
     switch (currentDemo) {
@@ -81,9 +87,11 @@ export default function Home() {
       {/* 右侧侧边栏 */}
       <aside ref={sidebarRef} className="w-[380px] h-full z-20 shrink-0 p-6 pl-0" style={{ pointerEvents: 'auto' }}>
         <Sidebar 
-          onStartGuidance={() => {
+          onStartGuidance={(taskType, taskId) => {
             setIsGuidanceActive(true);
             setCurrentStep(1);
+            setTaskType(taskType || "basic");
+            setTaskId(taskId);
           }}
           currentStep={currentStep}
           totalSteps={4}

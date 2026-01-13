@@ -6,9 +6,14 @@ interface DemoRedditProps {
   currentStep: number;
   isActive: boolean;
   onStepClick: (step: number) => void;
+  taskType?: "basic" | "advanced";
+  taskId?: string;
 }
 
-export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditProps) => {
+export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId }: DemoRedditProps) => {
+  const isAdvanced = taskType === "advanced";
+  const isGainFollowers = taskId === "gain-followers";
+  
   return (
     <div className="h-full bg-[#0E0E0F] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
       {/* 浏览器顶栏 */}
@@ -59,13 +64,19 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditPro
           >
             <div className="flex gap-3">
               <div className="flex flex-col items-center gap-1 text-gray-400">
-                <button className="hover:text-[#FF4500]">▲</button>
+                <button className="hover:text-[#FF4500] transition-colors">▲</button>
                 <span className="text-[12px] font-bold text-white">2.4k</span>
-                <button className="hover:text-blue-400">▼</button>
+                <button className="hover:text-blue-400 transition-colors">▼</button>
               </div>
               <div className="flex-1">
-                <div className="text-[10px] text-gray-500 mb-1">Posted by u/developer_alex • 3h</div>
-                <h3 className="text-white font-medium text-[15px] mb-2">AI-Powered Code Navigation is the Future of Development</h3>
+                <div className="text-[10px] text-gray-500 mb-1">
+                  Posted by {isGainFollowers ? "u/your_username" : "u/developer_alex"} • {isGainFollowers ? "2h" : "3h"}
+                </div>
+                <h3 className="text-white font-medium text-[15px] mb-2">
+                  {isGainFollowers 
+                    ? "How I Gained 1000 Followers in 3 Months: A Complete Reddit Strategy Guide"
+                    : "AI-Powered Code Navigation is the Future of Development"}
+                </h3>
                 <div className="flex items-center gap-4 text-[11px] text-gray-400">
                   {/* Comment - Step 3 */}
                   <span 
@@ -76,7 +87,7 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditPro
                         : "hover:text-white"
                     }`}
                   >
-                    💬 324 Comments
+                    💬 {isGainFollowers ? "1.2k" : "324"} Comments
                   </span>
                   <span className="hover:text-white cursor-pointer">🔗 Share</span>
                   <span className="hover:text-white cursor-pointer">⭐ Save</span>
@@ -89,9 +100,9 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditPro
           <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] hover:border-[#545456] cursor-pointer">
             <div className="flex gap-3">
               <div className="flex flex-col items-center gap-1 text-gray-400">
-                <button className="hover:text-[#FF4500]">▲</button>
+                <button className="hover:text-[#FF4500] transition-colors">▲</button>
                 <span className="text-[12px] font-bold text-white">891</span>
-                <button className="hover:text-blue-400">▼</button>
+                <button className="hover:text-blue-400 transition-colors">▼</button>
               </div>
               <div className="flex-1">
                 <div className="text-[10px] text-gray-500 mb-1">Posted by u/tech_insider • 5h</div>
@@ -103,6 +114,29 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditPro
               </div>
             </div>
           </div>
+
+          {isGainFollowers && (
+            <>
+              {/* Post 3 - Advanced Strategy */}
+              <div className="bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] hover:border-[#545456] cursor-pointer">
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center gap-1 text-gray-400">
+                    <button className="hover:text-[#FF4500] transition-colors">▲</button>
+                    <span className="text-[12px] font-bold text-white">3.1k</span>
+                    <button className="hover:text-blue-400 transition-colors">▼</button>
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[10px] text-gray-500 mb-1">Posted by u/your_username • 1d</div>
+                    <h3 className="text-white font-medium text-[15px] mb-2">Daily Engagement Thread: Share Your Latest Project!</h3>
+                    <div className="flex items-center gap-4 text-[11px] text-gray-400">
+                      <span>💬 847 Comments</span>
+                      <span>🔗 Share</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Sidebar - Step 4 */}
@@ -117,12 +151,21 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick }: DemoRedditPro
           >
             <h4 className="text-white font-bold text-[14px] mb-2">About Community</h4>
             <p className="text-gray-400 text-[12px] mb-3">Computer Programming discussion and news</p>
-            <div className="text-[12px] text-gray-400 space-y-1">
+            <div className="text-[12px] text-gray-400 space-y-1 mb-3">
               <div>👥 5.2m Members</div>
               <div>🟢 12.3k Online</div>
             </div>
-            <button className="w-full mt-3 py-2 bg-[#FF4500] text-white rounded-full text-[12px] font-bold hover:bg-[#FF5722]">
-              Join
+            {isGainFollowers && (
+              <div className="mb-3 p-2 bg-[#FF4500]/10 border border-[#FF4500]/30 rounded text-[11px] text-[#FF4500]">
+                <div className="font-bold mb-1">📈 Your Growth</div>
+                <div>Followers: 847/1000</div>
+                <div className="mt-1 h-1.5 bg-[#343536] rounded-full overflow-hidden">
+                  <div className="h-full bg-[#FF4500] rounded-full" style={{ width: '84.7%' }} />
+                </div>
+              </div>
+            )}
+            <button className="w-full mt-3 py-2 bg-[#FF4500] text-white rounded-full text-[12px] font-bold hover:bg-[#FF5722] transition-colors">
+              {isGainFollowers ? "Joined ✓" : "Join"}
             </button>
           </div>
         </div>

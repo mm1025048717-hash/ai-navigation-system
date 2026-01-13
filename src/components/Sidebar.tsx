@@ -37,8 +37,10 @@ interface Message {
   timestamp: Date;
 }
 
+type TaskType = "basic" | "advanced";
+
 interface SidebarProps {
-  onStartGuidance: () => void;
+  onStartGuidance: (taskType?: TaskType, taskId?: string) => void;
   currentStep: number;
   totalSteps: number;
   onNextStep: () => void;
@@ -102,9 +104,9 @@ export const Sidebar = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleStart = () => {
+  const handleStart = (taskType?: TaskType, taskId?: string) => {
     setView("active");
-    onStartGuidance();
+    onStartGuidance(taskType, taskId);
   };
 
   const handleReset = () => {

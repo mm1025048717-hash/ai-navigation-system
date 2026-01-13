@@ -31,7 +31,7 @@ interface GuidanceFlowProps {
   documents: UploadedDoc[];
   currentDemo: DemoType;
   onDemoSelect: (demo: DemoType) => void;
-  onStart: () => void;
+  onStart: (taskType?: TaskType, taskId?: string) => void;
 }
 
 const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string }> = {
@@ -467,7 +467,7 @@ export const GuidanceFlow = ({
             <button
               onClick={() => {
                 setCurrentStep(4);
-                setTimeout(() => onStart(), 300);
+                setTimeout(() => onStart(taskType, selectedTask?.id), 300);
               }}
               className="w-full h-12 bg-[#007AFF] text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 hover:bg-[#0063CE] active:scale-[0.98] transition-all"
             >

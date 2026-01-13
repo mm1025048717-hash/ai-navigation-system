@@ -6,9 +6,15 @@ interface DemoFigmaProps {
   currentStep: number;
   isActive: boolean;
   onStepClick: (step: number) => void;
+  taskType?: "basic" | "advanced";
+  taskId?: string;
 }
 
-export const DemoFigma = ({ currentStep, isActive, onStepClick }: DemoFigmaProps) => {
+export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId }: DemoFigmaProps) => {
+  const isAdvanced = taskType === "advanced";
+  const isBecomeExpert = taskId === "become-expert";
+  const isDesignSystem = taskId === "design-system";
+  
   return (
     <div className="h-full bg-[#2C2C2C] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
       {/* 顶部工具栏 */}
@@ -76,7 +82,30 @@ export const DemoFigma = ({ currentStep, isActive, onStepClick }: DemoFigmaProps
             </div>
           </div>
 
-          <div className="absolute top-20 left-96 w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl opacity-80"></div>
+          {isDesignSystem && (
+            <>
+              {/* Design System Components */}
+              <div className="absolute top-20 left-96 w-48 h-48 bg-white rounded-2xl shadow-xl p-4">
+                <div className="text-[10px] font-bold text-gray-800 mb-2">Button Variants</div>
+                <div className="space-y-2">
+                  <div className="h-8 bg-[#0D99FF] rounded flex items-center justify-center text-white text-[10px]">Primary</div>
+                  <div className="h-8 bg-gray-200 rounded flex items-center justify-center text-gray-800 text-[10px]">Secondary</div>
+                </div>
+              </div>
+              <div className="absolute top-20 left-[28rem] w-40 h-40 bg-white rounded-xl shadow-xl p-4">
+                <div className="text-[10px] font-bold text-gray-800 mb-2">Color Palette</div>
+                <div className="grid grid-cols-4 gap-1">
+                  {['#007AFF', '#34C759', '#FF9500', '#FF3B30'].map((color, i) => (
+                    <div key={i} className="w-full h-8 rounded" style={{ backgroundColor: color }} />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {!isDesignSystem && (
+            <div className="absolute top-20 left-96 w-48 h-48 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl opacity-80"></div>
+          )}
 
           {/* 底部组件 - Step 3 */}
           <div 
@@ -87,12 +116,24 @@ export const DemoFigma = ({ currentStep, isActive, onStepClick }: DemoFigmaProps
                 : "hover:ring-2 hover:ring-white/30"
             }`}
           >
-            <div className="text-white text-[11px] font-bold mb-2">Component</div>
+            <div className="text-white text-[11px] font-bold mb-2">
+              {isBecomeExpert ? "Design System" : "Component"}
+            </div>
             <div className="space-y-1">
               <div className="w-full h-3 bg-white/20 rounded"></div>
               <div className="w-2/3 h-3 bg-white/20 rounded"></div>
             </div>
           </div>
+
+          {isBecomeExpert && (
+            <div className="absolute bottom-16 right-24 w-48 h-32 bg-white rounded-xl shadow-xl p-4">
+              <div className="text-[10px] font-bold text-gray-800 mb-2">Portfolio Progress</div>
+              <div className="text-[9px] text-gray-600 mb-2">Projects: 7/10</div>
+              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-[#0D99FF] rounded-full" style={{ width: '70%' }} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 右侧属性面板 - Step 4 */}
