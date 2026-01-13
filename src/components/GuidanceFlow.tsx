@@ -66,19 +66,23 @@ export const GuidanceFlow = ({
   const [generatedSteps, setGeneratedSteps] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // 自动触发生成逻辑
+  // 自动触发生成逻辑 - 修复卡住问题
   useEffect(() => {
-    if (currentStep === 2 && !isGenerating && generatedSteps.length === 0) {
-      setIsGenerating(true);
-      // 模拟 AI 生成过程
-      const timer = setTimeout(() => {
-        setGeneratedSteps(GENERATED_STEPS[currentDemo]);
-        setIsGenerating(false);
-        setCurrentStep(3);
-      }, 2000);
-      return () => clearTimeout(timer);
+    // 当进入步骤 2 且还没有生成步骤时，开始生成
+    if (currentStep === 2) {
+      if (generatedSteps.length === 0 && !isGenerating) {
+        setIsGenerating(true);
+        // 模拟 AI 生成过程
+        const timer = setTimeout(() => {
+          setGeneratedSteps(GENERATED_STEPS[currentDemo]);
+          setIsGenerating(false);
+          // 自动进入下一步
+          setCurrentStep(3);
+        }, 2000);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [currentStep, currentDemo, isGenerating, generatedSteps.length]);
+  }, [currentStep, currentDemo]); // 简化依赖，只监听关键状态
 
   const demoInfo = DEMO_INFO[currentDemo];
 
@@ -197,16 +201,51 @@ export const GuidanceFlow = ({
             className="space-y-4"
           >
             <div className="flex items-center gap-3">
-              <Sparkles className="w-5 h-5 text-[#007AFF]" />
+              <Sparkles className={cn(
+                "w-5 h-5 text-[#007AFF]",
+                isGenerating && "animate-pulse"
+              )} />
               <span className="text-[13px] font-bold text-[#1D1D1F]">
                 AI 正在生成引导路径
               </span>
             </div>
             <div className="space-y-2 pl-8">
-              <p className="text-[11px] text-[#86868B]">解析知识库文档...</p>
-              <p className="text-[11px] text-[#86868B]">识别 {demoInfo.name} 操作流程...</p>
-              <p className="text-[11px] text-[#007AFF] font-medium">生成结构化引导步骤...</p>
+              <motion.p 
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-[11px] text-[#86868B]"
+              >
+                解析知识库文档...
+              </motion.p>
+              <motion.p 
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-[11px] text-[#86868B]"
+              >
+                识别 {demoInfo.name} 操作流程...
+              </motion.p>
+              <motion.p 
+                initial={{ opacity: 0.5 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="text-[11px] text-[#007AFF] font-medium"
+              >
+                生成结构化引导步骤...
+              </motion.p>
             </div>
+            {!isGenerating && generatedSteps.length === 0 && (
+              <button
+                onClick={() => {
+                  setGeneratedSteps(GENERATED_STEPS[currentDemo]);
+                  setCurrentStep(3);
+                }}
+                className="w-full h-10 bg-[#007AFF] text-white rounded-xl text-[12px] font-bold hover:bg-[#0063CE] transition-colors"
+              >
+                手动完成生成
+              </button>
+            )}
           </motion.div>
         )}
 
