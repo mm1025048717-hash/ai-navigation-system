@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Play, Pause, Scissors, Film, Volume2, Settings, Download } from "lucide-react";
+import { useState } from "react";
+import { Play, Pause, Scissors, Film, Volume2, Settings, Download, SkipBack, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoPremiereProps {
@@ -48,6 +49,16 @@ export const DemoPremiere = ({
   };
 
   const targetId = getStepTarget(currentStep);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration] = useState(120); // 总时长 120 秒
+  const [clips, setClips] = useState([
+    { id: 1, name: "视频片段1.mp4", start: 0, end: 30, color: "#EA77FF" },
+    { id: 2, name: "视频片段2.mp4", start: 30, end: 60, color: "#31A8FF" },
+    { id: 3, name: "音频轨道.wav", start: 0, end: 120, color: "#34C759", isAudio: true },
+  ]);
+  const [selectedClip, setSelectedClip] = useState<number | null>(null);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
   return (
     <div className="h-full bg-[#2C2C2C] rounded-2xl shadow-2xl overflow-hidden flex flex-col">

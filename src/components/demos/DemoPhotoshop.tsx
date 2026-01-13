@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Layers, Brush, Eraser, Crop, Filter, Save, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Layers, Brush, Eraser, Crop, Filter, Save, Eye, EyeOff, Move, Rectangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoPhotoshopProps {
@@ -46,6 +47,15 @@ export const DemoPhotoshop = ({
   };
 
   const targetId = getStepTarget(currentStep);
+  const [selectedTool, setSelectedTool] = useState<string>("brush");
+  const [layers, setLayers] = useState([
+    { id: 1, name: "背景", visible: true, opacity: 100, locked: false },
+    { id: 2, name: "图层 1", visible: true, opacity: 100, locked: false },
+    { id: 3, name: "文字", visible: true, opacity: 100, locked: false },
+  ]);
+  const [selectedLayer, setSelectedLayer] = useState<number | null>(2);
+  const [brushSize, setBrushSize] = useState(20);
+  const [brushOpacity, setBrushOpacity] = useState(100);
 
   return (
     <div className="h-full bg-[#2C2C2C] rounded-2xl shadow-2xl overflow-hidden flex flex-col">

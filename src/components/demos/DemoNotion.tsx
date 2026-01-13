@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, Plus, Search, Menu, Database, List, Grid, Calendar } from "lucide-react";
+import { useState } from "react";
+import { FileText, Plus, Search, Menu, Database, List, Grid, Calendar, Heading1, List as ListIcon, Image as ImageIcon, Code } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoNotionProps {
@@ -46,6 +47,19 @@ export const DemoNotion = ({
   };
 
   const targetId = getStepTarget(currentStep);
+  const [blocks, setBlocks] = useState([
+    { id: 1, type: "heading", content: "项目计划", level: 1 },
+    { id: 2, type: "text", content: "这是一个重要的项目，需要仔细规划。" },
+    { id: 3, type: "list", content: "任务1", items: ["子任务1", "子任务2"] },
+  ]);
+  const [selectedBlock, setSelectedBlock] = useState<number | null>(null);
+  const [showBlockMenu, setShowBlockMenu] = useState(false);
+  const [databaseView, setDatabaseView] = useState<"table" | "board" | "calendar">("table");
+  const [databaseRows, setDatabaseRows] = useState([
+    { id: 1, name: "任务1", status: "进行中", assignee: "张三", date: "2024-01-15" },
+    { id: 2, name: "任务2", status: "待开始", assignee: "李四", date: "2024-01-16" },
+    { id: 3, name: "任务3", status: "已完成", assignee: "王五", date: "2024-01-14" },
+  ]);
 
   return (
     <div className="h-full bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">

@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Database, FileText, CheckCircle2, TrendingUp, Settings, Search } from "lucide-react";
+import { useState } from "react";
+import { Database, FileText, CheckCircle2, TrendingUp, Settings, Search, Plus, Send, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoSAPProps {
@@ -23,6 +24,21 @@ export const DemoSAP = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoSAPProps) => {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formData, setFormData] = useState({
+    documentType: "",
+    amount: "",
+    vendor: "",
+    description: "",
+  });
+  const [documents, setDocuments] = useState([
+    { id: 1, type: "采购订单", amount: "¥50,000", vendor: "供应商A", status: "待审核", date: "2024-01-15" },
+    { id: 2, type: "发票", amount: "¥30,000", vendor: "供应商B", status: "已审核", date: "2024-01-14" },
+    { id: 3, type: "付款单", amount: "¥75,000", vendor: "供应商C", status: "待审核", date: "2024-01-13" },
+  ]);
+  const [selectedDocument, setSelectedDocument] = useState<number | null>(null);
+  const [workflowStep, setWorkflowStep] = useState<"create" | "review" | "approve" | "complete">("create");
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];
