@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { DemoIDE } from "@/components/demos/DemoIDE";
 import { DemoReddit } from "@/components/demos/DemoReddit";
 import { DemoFigma } from "@/components/demos/DemoFigma";
+import { Overlay } from "@/components/Overlay";
 
 type DemoType = "ide" | "reddit" | "figma";
 
@@ -75,8 +76,52 @@ export default function Home() {
     }
   };
 
+  // 计算目标元素位置（用于Overlay）
+  const getTargetElement = () => {
+    if (!isGuidanceActive || currentStep === 0) return undefined;
+    
+    // 根据当前步骤和演示类型计算目标位置
+    // 这里可以根据实际UI元素识别结果动态设置
+    const baseX = isElectron ? 0 : 100;
+    const baseY = isElectron ? 0 : 100;
+    
+    switch (currentDemo) {
+      case "ide":
+        if (currentStep === 1) return { x: baseX + 60, y: baseY + 115, width: 200, height: 30 };
+        if (currentStep === 2) return { x: baseX + 280, y: baseY + 195, width: 300, height: 25 };
+        if (currentStep === 3) return { x: baseX + 60, y: baseY + 150, width: 200, height: 30 };
+        if (currentStep === 4) return { x: baseX + 280, y: baseY + window.innerHeight - 140, width: 600, height: 120 };
+        break;
+      case "reddit":
+        if (currentStep === 1) return { x: baseX + window.innerWidth - 400, y: baseY + 58, width: 120, height: 36 };
+        if (currentStep === 2) return { x: baseX + 50, y: baseY + 140, width: 600, height: 100 };
+        if (currentStep === 3) return { x: baseX + 120, y: baseY + 255, width: 150, height: 30 };
+        if (currentStep === 4) return { x: baseX + window.innerWidth - 300, y: baseY + 140, width: 280, height: 200 };
+        break;
+      case "figma":
+        if (currentStep === 1) return { x: baseX + 20, y: baseY + 100, width: 48, height: 200 };
+        if (currentStep === 2) return { x: baseX + 300, y: baseY + 60, width: 256, height: 160 };
+        if (currentStep === 3) return { x: baseX + 300, y: baseY + window.innerHeight - 180, width: 224, height: 128 };
+        if (currentStep === 4) return { x: baseX + window.innerWidth - 240, y: baseY + 100, width: 256, height: 400 };
+        break;
+    }
+    return undefined;
+  };
+
   return (
     <main className="flex h-screen w-screen overflow-hidden select-none" style={{ backgroundColor: isElectron ? 'transparent' : '#E8E8ED' }}>
+      {/* 屏幕交互引导Overlay - 仅在Electron模式下显示 */}
+      {isElectron && isGuidanceActive && (
+        <Overlay
+          isActive={isGuidanceActive}
+          currentStep={currentStep}
+          targetElement={getTargetElement()}
+          arrowFrom={currentStep > 1 ? { x: window.innerWidth - 200, y: window.innerHeight / 2 } : undefined}
+          label={currentStep > 0 ? `步骤 ${currentStep}` : undefined}
+          isElectron={isElectron}
+        />
+      )}
+
       {/* 左侧屏幕区域 - Electron 模式下完全透明 */}
       <div 
         className="relative flex-1 h-full"

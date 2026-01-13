@@ -163,29 +163,60 @@ export const GuidanceFlow = ({
   const [generatedSteps, setGeneratedSteps] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // 自动触发生成逻辑 - 修复卡住问题
+  // 自动触发生成逻辑 - 使用真实API
   useEffect(() => {
     // 当进入步骤 2 且还没有生成步骤时，开始生成
     if (currentStep === 2) {
       if (generatedSteps.length === 0 && !isGenerating) {
         setIsGenerating(true);
-        // 模拟 AI 生成过程
-        const timer = setTimeout(() => {
-          // 如果还没有选择任务，使用基础任务
-          if (!selectedTask && taskType === "basic") {
-            setGeneratedSteps(BASIC_TASKS[currentDemo]);
-          }
-          setIsGenerating(false);
-          // 自动进入下一步
-          setCurrentStep(3);
-        }, 2000);
-        return () => clearTimeout(timer);
+        
+        // 构建任务描述
+        const taskDescription = selectedTask 
+          ? `${selectedTask.title}: ${selectedTask.description}`
+          : taskType === "basic" 
+            ? `在${DEMO_INFO[currentDemo].name}中执行基础操作`
+            : `在${DEMO_INFO[currentDemo].name}中执行复杂任务`;
+
+        // 调用真实的任务规划API
+        fetch('/api/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task: taskDescription,
+            currentDemo,
+            documents: documents.map(d => ({ id: d.id, name: d.name })),
+          }),
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.steps && data.steps.length > 0) {
+              setGeneratedSteps(data.steps);
+            } else if (selectedTask) {
+              // 如果API失败，使用预设步骤
+              setGeneratedSteps(selectedTask.steps);
+            } else if (taskType === "basic") {
+              setGeneratedSteps(BASIC_TASKS[currentDemo]);
+            }
+            setIsGenerating(false);
+            setCurrentStep(3);
+          })
+          .catch(error => {
+            console.error('Plan API error:', error);
+            // 降级到预设步骤
+            if (selectedTask) {
+              setGeneratedSteps(selectedTask.steps);
+            } else if (taskType === "basic") {
+              setGeneratedSteps(BASIC_TASKS[currentDemo]);
+            }
+            setIsGenerating(false);
+            setCurrentStep(3);
+          });
       } else if (generatedSteps.length > 0) {
         // 如果已经有步骤，直接进入下一步
         setCurrentStep(3);
       }
     }
-  }, [currentStep, currentDemo, selectedTask, taskType, generatedSteps.length, isGenerating]);
+  }, [currentStep, currentDemo, selectedTask, taskType, generatedSteps.length, isGenerating, documents]);
 
   const demoInfo = DEMO_INFO[currentDemo];
 
