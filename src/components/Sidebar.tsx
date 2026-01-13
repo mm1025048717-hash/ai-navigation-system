@@ -35,6 +35,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
+import { UsageLimit } from "./UsageLimit";
+import { isFocusedSoftware, getAccuracyWarning } from "@/lib/focused-software";
 import { GuidanceFlow } from "./GuidanceFlow";
 import { ChatMessage } from "./ChatMessage";
 

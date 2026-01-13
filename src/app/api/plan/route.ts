@@ -3,6 +3,7 @@ import { vectorStore } from "@/lib/vector-store";
 import { getKnowledgeContext } from "@/lib/knowledge-store";
 import { getChatModel, createPlanPrompt, stringParser } from "@/lib/langchain-config";
 import { cacheManager, generateCacheKey } from "@/lib/cache-manager";
+import { usageTracker } from "@/lib/usage-tracker";
 
 /**
  * 任务规划器 API - 基于知识库生成引导步骤
@@ -23,11 +24,15 @@ export async function POST(request: NextRequest) {
     const cacheKey = generateCacheKey("plan", task, currentDemo, documents?.length || 0);
     const cached = cacheManager.get<any>(cacheKey);
     if (cached) {
+      // 缓存命中，不消耗使用量
       return NextResponse.json({
         ...cached,
         cached: true,
       });
     }
+
+    // 检查使用量限制（仅在服务端记录，客户端也会检查）
+    // 这里不阻止请求，让客户端决定是否显示升级提示
 
     // 1. 从知识库中检索相关内容（RAG）
     const relevantChunks = await vectorStore.search(task, 10);

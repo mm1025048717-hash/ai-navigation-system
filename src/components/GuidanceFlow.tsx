@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
+import { isFocusedSoftware, getAccuracyWarning } from "@/lib/focused-software";
+import { AlertCircle, Star } from "lucide-react";
 
 // C端软件
 type ConsumerDemoType = "ide" | "reddit" | "figma" | "premiere" | "photoshop" | "notion";
