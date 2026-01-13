@@ -8,12 +8,29 @@ interface DemoFigmaProps {
   onStepClick: (step: number) => void;
   taskType?: "basic" | "advanced";
   taskId?: string;
+  generatedSteps?: string[];
+  totalSteps?: number;
 }
 
-export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId }: DemoFigmaProps) => {
+export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId, generatedSteps = [], totalSteps = 4 }: DemoFigmaProps) => {
   const isAdvanced = taskType === "advanced";
   const isBecomeExpert = taskId === "become-expert";
   const isDesignSystem = taskId === "design-system";
+  
+  // 根据步骤内容动态确定可点击元素
+  const getStepTarget = (stepIndex: number) => {
+    if (!isAdvanced || !generatedSteps.length) {
+      return stepIndex;
+    }
+    const stepText = generatedSteps[stepIndex - 1]?.toLowerCase() || "";
+    if (stepText.includes("理论") || stepText.includes("基础") || stepText.includes("学习")) return 1;
+    if (stepText.includes("功能") || stepText.includes("组件") || stepText.includes("变体")) return 2;
+    if (stepText.includes("项目") || stepText.includes("案例") || stepText.includes("完成")) return 3;
+    if (stepText.includes("作品集") || stepText.includes("建立") || stepText.includes("个人")) return 4;
+    if (stepText.includes("研究") || stepText.includes("交互") || stepText.includes("用户")) return 5;
+    if (stepText.includes("社区") || stepText.includes("分享") || stepText.includes("经验")) return 6;
+    return Math.min(stepIndex, 6);
+  };
   
   return (
     <div className="h-full bg-[#2C2C2C] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">

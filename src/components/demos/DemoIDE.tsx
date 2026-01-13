@@ -8,12 +8,29 @@ interface DemoIDEProps {
   onStepClick: (step: number) => void;
   taskType?: "basic" | "advanced";
   taskId?: string;
+  generatedSteps?: string[];
+  totalSteps?: number;
 }
 
-export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId }: DemoIDEProps) => {
+export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId, generatedSteps = [], totalSteps = 4 }: DemoIDEProps) => {
   const isAdvanced = taskType === "advanced";
   const isBuildAPI = taskId === "build-api";
   const isDebugComplex = taskId === "debug-complex";
+  
+  // 根据步骤内容动态确定可点击元素
+  const getStepTarget = (stepIndex: number) => {
+    if (!isAdvanced || !generatedSteps.length) {
+      return stepIndex;
+    }
+    const stepText = generatedSteps[stepIndex - 1]?.toLowerCase() || "";
+    if (stepText.includes("项目") || stepText.includes("创建") || stepText.includes("结构")) return 1;
+    if (stepText.includes("模型") || stepText.includes("数据") || stepText.includes("数据库")) return 2;
+    if (stepText.includes("认证") || stepText.includes("中间件") || stepText.includes("auth")) return 3;
+    if (stepText.includes("路由") || stepText.includes("控制器") || stepText.includes("api")) return 4;
+    if (stepText.includes("文档") || stepText.includes("测试") || stepText.includes("用例")) return 5;
+    if (stepText.includes("部署") || stepText.includes("生产") || stepText.includes("环境")) return 6;
+    return Math.min(stepIndex, 6);
+  };
 
   return (
     <div className="h-full bg-[#1E1E1E] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">

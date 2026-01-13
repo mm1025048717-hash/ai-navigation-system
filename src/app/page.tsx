@@ -16,6 +16,7 @@ export default function Home() {
   const [currentDemo, setCurrentDemo] = useState<DemoType>("ide");
   const [taskType, setTaskType] = useState<TaskType>("basic");
   const [taskId, setTaskId] = useState<string | undefined>(undefined);
+  const [generatedSteps, setGeneratedSteps] = useState<string[]>([]);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isElectron, setIsElectron] = useState(false);
 
@@ -48,7 +49,8 @@ export default function Home() {
 
   const handleStepClick = (step: number) => {
     if (isGuidanceActive && step === currentStep) {
-      setCurrentStep(prev => Math.min(prev + 1, 4));
+      const maxSteps = generatedSteps.length > 0 ? generatedSteps.length : 4;
+      setCurrentStep(prev => Math.min(prev + 1, maxSteps));
     }
   };
 
@@ -59,6 +61,8 @@ export default function Home() {
       onStepClick: handleStepClick,
       taskType,
       taskId,
+      generatedSteps,
+      totalSteps: generatedSteps.length > 0 ? generatedSteps.length : 4,
     };
     
     switch (currentDemo) {
@@ -87,18 +91,23 @@ export default function Home() {
       {/* 右侧侧边栏 */}
       <aside ref={sidebarRef} className="w-[380px] h-full z-20 shrink-0 p-6 pl-0" style={{ pointerEvents: 'auto' }}>
         <Sidebar 
-          onStartGuidance={(taskType, taskId) => {
+          onStartGuidance={(taskType, taskId, steps) => {
             setIsGuidanceActive(true);
             setCurrentStep(1);
             setTaskType(taskType || "basic");
             setTaskId(taskId);
+            setGeneratedSteps(steps || []);
           }}
           currentStep={currentStep}
-          totalSteps={4}
-          onNextStep={() => setCurrentStep(prev => Math.min(prev + 1, 4))}
+          totalSteps={generatedSteps.length > 0 ? generatedSteps.length : 4}
+          onNextStep={() => {
+            const maxSteps = generatedSteps.length > 0 ? generatedSteps.length : 4;
+            setCurrentStep(prev => Math.min(prev + 1, maxSteps));
+          }}
           isElectron={isElectron}
           currentDemo={currentDemo}
           onSwitchDemo={handleSwitchDemo}
+          generatedSteps={generatedSteps}
         />
       </aside>
     </main>

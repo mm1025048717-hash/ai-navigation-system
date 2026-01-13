@@ -8,11 +8,30 @@ interface DemoRedditProps {
   onStepClick: (step: number) => void;
   taskType?: "basic" | "advanced";
   taskId?: string;
+  generatedSteps?: string[];
+  totalSteps?: number;
 }
 
-export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId }: DemoRedditProps) => {
+export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "basic", taskId, generatedSteps = [], totalSteps = 4 }: DemoRedditProps) => {
   const isAdvanced = taskType === "advanced";
   const isGainFollowers = taskId === "gain-followers";
+  
+  // 根据步骤内容动态确定可点击元素
+  const getStepTarget = (stepIndex: number) => {
+    if (!isAdvanced || !generatedSteps.length) {
+      // 基础任务：固定 4 步
+      return stepIndex;
+    }
+    
+    // 复杂任务：根据步骤内容映射
+    const stepText = generatedSteps[stepIndex - 1]?.toLowerCase() || "";
+    if (stepText.includes("社区") || stepText.includes("选择") || stepText.includes("垂直")) return 1;
+    if (stepText.includes("发布") || stepText.includes("内容") || stepText.includes("原创")) return 2;
+    if (stepText.includes("评论") || stepText.includes("互动") || stepText.includes("深度")) return 3;
+    if (stepText.includes("数据") || stepText.includes("分析") || stepText.includes("优化")) return 4;
+    if (stepText.includes("品牌") || stepText.includes("持续") || stepText.includes("建立")) return 5;
+    return Math.min(stepIndex, 6);
+  };
   
   return (
     <div className="h-full bg-[#0E0E0F] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
@@ -35,16 +54,21 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
           <span className="text-white font-bold text-[14px]">r/programming</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
-          {/* Create Post - Step 1 */}
+          {/* Create Post - Step 1 (基础任务) 或 选择社区 (复杂任务) */}
           <button 
-            onClick={() => onStepClick(1)}
+            onClick={() => {
+              const targetStep = isAdvanced ? getStepTarget(1) : 1;
+              if (isActive && (currentStep === 1 || (isAdvanced && getStepTarget(currentStep) === 1))) {
+                onStepClick(1);
+              }
+            }}
             className={`px-4 py-1.5 bg-white text-[#1A1A1B] rounded-full text-[12px] font-bold transition-all cursor-pointer ${
-              isActive && currentStep === 1 
+              isActive && (currentStep === 1 || (isAdvanced && getStepTarget(currentStep) === 1))
                 ? "ring-2 ring-[#007AFF] ring-offset-2 ring-offset-[#1A1A1B] animate-pulse bg-[#007AFF] text-white" 
                 : "hover:bg-gray-200"
             }`}
           >
-            + Create Post
+            {isAdvanced && isGainFollowers ? "选择社区" : "+ Create Post"}
           </button>
         </div>
       </div>
@@ -53,11 +77,16 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
       <div className="flex-1 flex overflow-hidden">
         {/* Main Feed */}
         <div className="flex-1 p-4 overflow-auto space-y-3">
-          {/* Post 1 - Step 2 */}
+          {/* Post 1 - Step 2 (发布内容) */}
           <div 
-            onClick={() => onStepClick(2)}
+            onClick={() => {
+              const targetStep = isAdvanced ? getStepTarget(2) : 2;
+              if (isActive && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2))) {
+                onStepClick(2);
+              }
+            }}
             className={`bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] transition-all cursor-pointer ${
-              isActive && currentStep === 2 
+              isActive && (currentStep === 2 || (isAdvanced && getStepTarget(currentStep) === 2))
                 ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse" 
                 : "hover:border-[#545456]"
             }`}
@@ -78,11 +107,17 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
                     : "AI-Powered Code Navigation is the Future of Development"}
                 </h3>
                 <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                  {/* Comment - Step 3 */}
+                  {/* Comment - Step 3 (互动评论) */}
                   <span 
-                    onClick={(e) => { e.stopPropagation(); onStepClick(3); }}
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      const targetStep = isAdvanced ? getStepTarget(3) : 3;
+                      if (isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))) {
+                        onStepClick(3);
+                      }
+                    }}
                     className={`flex items-center gap-1 cursor-pointer transition-all ${
-                      isActive && currentStep === 3 
+                      isActive && (currentStep === 3 || (isAdvanced && getStepTarget(currentStep) === 3))
                         ? "text-[#007AFF] font-bold bg-[#007AFF]/20 px-2 py-1 rounded animate-pulse" 
                         : "hover:text-white"
                     }`}
@@ -135,16 +170,48 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
                   </div>
                 </div>
               </div>
+
+              {/* 数据分析区域 - Step 4/5 (分析数据优化) */}
+              {(currentStep === 4 || currentStep === 5) && isActive && (
+                <div 
+                  onClick={() => {
+                    if (isActive && (currentStep === 4 || currentStep === 5)) {
+                      onStepClick(currentStep);
+                    }
+                  }}
+                  className={`bg-[#1A1A1B] rounded-lg p-4 border transition-all cursor-pointer ${
+                    isActive && (currentStep === 4 || currentStep === 5)
+                      ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse border-[#007AFF]" 
+                      : "border-[#343536] hover:border-[#545456]"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[#007AFF] text-lg">📊</span>
+                    <h4 className="text-white font-bold text-[14px]">数据分析中心</h4>
+                  </div>
+                  <div className="space-y-2 text-[12px] text-gray-400">
+                    <div>最佳发布时间: 14:00 - 18:00</div>
+                    <div>平均互动率: 12.3% ↑</div>
+                    <div>热门话题: #AI #Programming #WebDev</div>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
 
-        {/* Sidebar - Step 4 */}
+        {/* Sidebar - Step 4/5/6 (数据分析/社区信息) */}
         <div className="w-72 p-4 border-l border-[#343536] hidden lg:block">
           <div 
-            onClick={() => onStepClick(4)}
+            onClick={() => {
+              // 对于复杂任务，步骤 4-6 都可能点击这里
+              const targetStep = isAdvanced ? getStepTarget(currentStep) : 4;
+              if (isActive && (currentStep === 4 || (isAdvanced && (currentStep >= 4 && currentStep <= totalSteps)))) {
+                onStepClick(currentStep);
+              }
+            }}
             className={`bg-[#1A1A1B] rounded-lg p-4 border border-[#343536] transition-all cursor-pointer ${
-              isActive && currentStep === 4 
+              isActive && (currentStep === 4 || (isAdvanced && (currentStep >= 4 && currentStep <= totalSteps)))
                 ? "ring-2 ring-[#007AFF] bg-[#007AFF]/10 animate-pulse" 
                 : "hover:border-[#545456]"
             }`}

@@ -40,13 +40,14 @@ interface Message {
 type TaskType = "basic" | "advanced";
 
 interface SidebarProps {
-  onStartGuidance: (taskType?: TaskType, taskId?: string) => void;
+  onStartGuidance: (taskType?: TaskType, taskId?: string, steps?: string[]) => void;
   currentStep: number;
   totalSteps: number;
   onNextStep: () => void;
   isElectron?: boolean;
   currentDemo?: DemoType;
   onSwitchDemo?: (demo: DemoType) => void;
+  generatedSteps?: string[];
 }
 
 const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string; description: string }> = {
@@ -86,7 +87,8 @@ export const Sidebar = ({
   onNextStep, 
   isElectron = false,
   currentDemo = "ide",
-  onSwitchDemo
+  onSwitchDemo,
+  generatedSteps = []
 }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<TabType>("guidance");
   const [view, setView] = useState<"setup" | "active">("setup");
@@ -104,9 +106,9 @@ export const Sidebar = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleStart = (taskType?: TaskType, taskId?: string) => {
+  const handleStart = (taskType?: TaskType, taskId?: string, steps?: string[]) => {
     setView("active");
-    onStartGuidance(taskType, taskId);
+    onStartGuidance(taskType, taskId, steps);
   };
 
   const handleReset = () => {
@@ -213,7 +215,10 @@ export const Sidebar = ({
   };
 
   const demoInfo = DEMO_INFO[currentDemo];
-  const stepMessage = STEP_MESSAGES[currentDemo][currentStep] || "进行中...";
+  // 优先使用生成的步骤内容，否则使用默认消息
+  const stepMessage = generatedSteps.length > 0 && currentStep > 0 && currentStep <= generatedSteps.length
+    ? generatedSteps[currentStep - 1]
+    : STEP_MESSAGES[currentDemo][currentStep] || "进行中...";
 
   return (
     <div className="flex flex-col h-full bg-white text-[#1D1D1F] overflow-hidden rounded-[28px] shadow-2xl border border-black/5">
