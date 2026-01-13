@@ -33,29 +33,33 @@ ${knowledgeContext ? `## 用户知识库内容\n${knowledgeContext}\n` : ''}
 - 突出关键操作和注意事项
 - 适当使用 emoji 增强可读性`;
 
-    // 使用 OpenAI API（如果配置了密钥）
-    const apiKey = process.env.OPENAI_API_KEY;
+    // 使用 DeepSeek API（兼容 OpenAI 格式）
+    // 文档: https://api-docs.deepseek.com/zh-cn/
+    const apiKey = process.env.DEEPSEEK_API_KEY;
     
     if (apiKey) {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'deepseek-chat', // DeepSeek-V3.2 非思考模式
           messages: [
             { role: 'system', content: systemPrompt },
             ...messages.map((m: any) => ({ role: m.role, content: m.content }))
           ],
           temperature: 0.7,
-          max_tokens: 1000,
+          max_tokens: 2000,
+          stream: false,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('OpenAI API error');
+        const errorText = await response.text();
+        console.error('DeepSeek API error:', errorText);
+        throw new Error('DeepSeek API error');
       }
 
       const data = await response.json();
