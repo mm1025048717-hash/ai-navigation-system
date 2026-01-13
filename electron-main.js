@@ -42,17 +42,36 @@ ipcMain.on('set-ignore-mouse-events', (event, ignore, options) => {
   }
 });
 
-// 真实屏幕捕捉
+// 真实屏幕捕捉 - 支持实时捕获
 ipcMain.handle('capture-screen', async () => {
   try {
+    const { width, height } = screen.getPrimaryDisplay().workAreaSize;
     const sources = await desktopCapturer.getSources({ 
       types: ['screen'], 
-      thumbnailSize: screen.getPrimaryDisplay().size 
+      thumbnailSize: { width, height }
     });
-    return sources[0].thumbnail.toDataURL();
+    
+    if (sources && sources.length > 0) {
+      return sources[0].thumbnail.toDataURL();
+    }
+    return null;
   } catch (err) {
     console.error('Screen capture failed:', err);
     return null;
+  }
+});
+
+// 获取屏幕尺寸
+ipcMain.handle('get-screen-size', async () => {
+  try {
+    const display = screen.getPrimaryDisplay();
+    return {
+      width: display.workAreaSize.width,
+      height: display.workAreaSize.height,
+    };
+  } catch (err) {
+    console.error('Get screen size failed:', err);
+    return { width: 1920, height: 1080 };
   }
 });
 

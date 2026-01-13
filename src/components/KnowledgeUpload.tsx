@@ -102,30 +102,30 @@ export const KnowledgeUpload = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* 标题栏 */}
       <button
         onClick={onToggleExpand}
-        className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-[#007AFF]/5 to-[#5856D6]/5 rounded-xl border border-[#007AFF]/10 hover:border-[#007AFF]/20 transition-all"
+        className="w-full flex items-center justify-between p-4 bg-[#F5F5F7] rounded-2xl border border-black/[0.03] hover:bg-[#E8E8ED] transition-all group"
       >
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#007AFF] to-[#5856D6] flex items-center justify-center">
-            <BookOpen className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <BookOpen className="w-5 h-5 text-[#007AFF]" />
           </div>
           <div className="text-left">
-            <div className="text-[12px] font-bold text-gray-800">知识库</div>
-            <div className="text-[10px] text-gray-500">
-              {documents.length > 0 ? `${documents.length} 个文档已加载` : '上传文档启用 AI'}
+            <div className="text-[13px] font-bold text-[#1D1D1F]">智能知识库</div>
+            <div className="text-[11px] text-[#86868B] font-medium mt-0.5">
+              {documents.length > 0 ? `${documents.length} 个文档已就绪` : '上传操作手册激活 AI'}
             </div>
           </div>
         </div>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="w-6 h-6 rounded-md bg-black/5 flex items-center justify-center"
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-sm"
         >
-          <svg className="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <svg className="w-3.5 h-3.5 text-[#86868B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
           </svg>
         </motion.div>
       </button>
@@ -136,20 +136,20 @@ export const KnowledgeUpload = ({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden"
           >
-            <div className="space-y-3 pt-1">
+            <div className="space-y-4 pt-1">
               {/* 拖拽上传区域 */}
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={cn(
-                  "relative border-2 border-dashed rounded-xl p-4 transition-all cursor-pointer",
+                  "relative border-2 border-dashed rounded-[20px] p-6 transition-all cursor-pointer",
                   isDragging
                     ? "border-[#007AFF] bg-[#007AFF]/5"
-                    : "border-gray-200 hover:border-[#007AFF]/50 hover:bg-gray-50"
+                    : "border-[#E8E8ED] hover:border-[#007AFF]/30 hover:bg-[#F5F5F7]"
                 )}
               >
                 <input
@@ -160,21 +160,23 @@ export const KnowledgeUpload = ({
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 
-                <div className="flex flex-col items-center gap-2 text-center">
-                  {isUploading ? (
-                    <Loader2 className="w-8 h-8 text-[#007AFF] animate-spin" />
-                  ) : (
-                    <Upload className={cn(
-                      "w-8 h-8 transition-colors",
-                      isDragging ? "text-[#007AFF]" : "text-gray-400"
-                    )} />
-                  )}
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+                    {isUploading ? (
+                      <Loader2 className="w-6 h-6 text-[#007AFF] animate-spin" />
+                    ) : (
+                      <Upload className={cn(
+                        "w-6 h-6 transition-colors",
+                        isDragging ? "text-[#007AFF]" : "text-[#86868B]"
+                      )} />
+                    )}
+                  </div>
                   <div>
-                    <p className="text-[12px] font-semibold text-gray-700">
-                      {isDragging ? "释放文件以上传" : "拖拽文件到此处"}
+                    <p className="text-[13px] font-bold text-[#1D1D1F]">
+                      {isDragging ? "释放以同步" : "拖入说明文档"}
                     </p>
-                    <p className="text-[10px] text-gray-500 mt-0.5">
-                      支持 TXT、Markdown 等文本文件
+                    <p className="text-[11px] text-[#86868B] mt-1 font-medium">
+                      支持 Markdown, TXT 格式
                     </p>
                   </div>
                 </div>
@@ -182,37 +184,40 @@ export const KnowledgeUpload = ({
 
               {/* 已上传文档列表 */}
               {documents.length > 0 && (
-                <div className="space-y-2">
-                  <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider px-1">
-                    已加载文档
+                <div className="space-y-2.5">
+                  <div className="text-[11px] font-bold text-[#86868B] uppercase tracking-[0.1em] px-1">
+                    已连接的知识
                   </div>
                   {documents.map((doc) => (
                     <motion.div
                       key={doc.id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="flex items-start gap-2 p-2.5 bg-white rounded-xl border border-gray-100 shadow-sm group"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                      className="flex items-center gap-3 p-3.5 bg-white rounded-2xl border border-black/[0.03] shadow-sm group hover:border-[#007AFF]/20 transition-all"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-[#007AFF]/10 flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-4 h-4 text-[#007AFF]" />
+                      <div className="w-9 h-9 rounded-xl bg-[#F5F5F7] flex items-center justify-center flex-shrink-0 group-hover:bg-[#E8F2FF] transition-colors">
+                        <FileText className="w-5 h-5 text-[#86868B] group-hover:text-[#007AFF] transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[11px] font-semibold text-gray-800 truncate">
+                          <span className="text-[12px] font-bold text-[#1D1D1F] truncate">
                             {doc.name}
                           </span>
-                          <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#34C759] flex-shrink-0" />
                         </div>
-                        <p className="text-[9px] text-gray-500 mt-0.5">
-                          {formatFileSize(doc.size)} • {doc.preview.slice(0, 50)}...
+                        <p className="text-[10px] text-[#86868B] mt-0.5 font-medium">
+                          {formatFileSize(doc.size)} • {doc.preview.slice(0, 30)}...
                         </p>
                       </div>
                       <button
-                        onClick={() => onDocumentRemove(doc.id)}
-                        className="w-6 h-6 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-50 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDocumentRemove(doc.id);
+                        }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-50 transition-all active:scale-90"
                       >
-                        <Trash2 className="w-3 h-3 text-red-500" />
+                        <Trash2 className="w-3.5 h-3.5 text-red-500" />
                       </button>
                     </motion.div>
                   ))}
@@ -221,10 +226,12 @@ export const KnowledgeUpload = ({
 
               {/* 提示信息 */}
               {documents.length === 0 && (
-                <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-xl border border-amber-100">
-                  <div className="text-amber-500 mt-0.5">💡</div>
-                  <p className="text-[10px] text-amber-700 leading-relaxed">
-                    上传软件说明书、操作手册等文档，AI 将基于这些知识为你提供精准的操作指导。
+                <div className="flex items-start gap-3 p-4 bg-[#F5F5F7] rounded-[20px] border border-black/[0.02]">
+                  <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                    <span className="text-[10px]">💡</span>
+                  </div>
+                  <p className="text-[11px] text-[#1D1D1F] leading-[1.6] font-medium">
+                    上传软件说明书、操作手册等文档，AI 将基于这些知识为你提供极度精准的操作指导。
                   </p>
                 </div>
               )}

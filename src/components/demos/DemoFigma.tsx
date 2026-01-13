@@ -153,12 +153,12 @@ const StepLabel = ({ step }: { step: number }) => {
   return (
     <motion.div
       key={step}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="absolute z-20 px-3 py-1.5 bg-[#007AFF] text-white rounded-full shadow-xl text-[11px] font-bold flex items-center gap-1.5"
+      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      className="absolute z-20 px-4 py-2 bg-white text-[#007AFF] rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.15)] border border-[#007AFF]/20 text-[12px] font-bold flex items-center gap-2 whitespace-nowrap"
       style={{ top: label.top, left: label.left }}
     >
-      <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping" />
+      <div className="w-2 h-2 bg-[#007AFF] rounded-full animate-pulse" />
       {label.text}
     </motion.div>
   );
