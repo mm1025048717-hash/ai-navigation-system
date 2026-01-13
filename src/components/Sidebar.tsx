@@ -18,10 +18,13 @@ import {
   Bot,
   User,
   Navigation,
-  MessagesSquare
+  MessagesSquare,
+  Upload,
+  FileText,
+  Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { KnowledgeUpload, UploadedDoc } from "./KnowledgeUpload";
+import { UploadedDoc } from "./KnowledgeUpload";
 import { GuidanceFlow } from "./GuidanceFlow";
 
 type DemoType = "ide" | "reddit" | "figma";
@@ -89,8 +92,10 @@ export const Sidebar = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [documents, setDocuments] = useState<UploadedDoc[]>([]);
-  const [isKnowledgeExpanded, setIsKnowledgeExpanded] = useState(true);
+  const [isUploadMenuOpen, setIsUploadMenuOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // 自动滚动到最新消息
   useEffect(() => {
@@ -174,6 +179,37 @@ export const Sidebar = ({
     setDocuments(prev => prev.filter(d => d.id !== id));
   };
 
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    
+    for (const file of Array.from(files)) {
+      if (!file.type.includes('text') && !file.name.endsWith('.md') && !file.name.endsWith('.txt') && !file.name.endsWith('.html')) {
+        continue;
+      }
+      
+      setIsUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (response.ok) {
+          const doc = await response.json();
+          handleDocumentAdd(doc);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+    setIsUploadMenuOpen(false);
+  };
+
   const demoInfo = DEMO_INFO[currentDemo];
   const stepMessage = STEP_MESSAGES[currentDemo][currentStep] || "进行中...";
 
@@ -248,7 +284,6 @@ export const Sidebar = ({
                     onSwitchDemo?.(demo);
                   }}
                   onStart={handleStart}
-                  isGenerating={false}
                 />
               ) : (
                 <div className="space-y-5">
@@ -327,17 +362,30 @@ export const Sidebar = ({
               exit={{ opacity: 0, y: -10 }}
               className="space-y-6"
             >
-              {/* 知识库上传模块 */}
-              <KnowledgeUpload
-                documents={documents}
-                onDocumentAdd={handleDocumentAdd}
-                onDocumentRemove={handleDocumentRemove}
-                isExpanded={isKnowledgeExpanded}
-                onToggleExpand={() => setIsKnowledgeExpanded(!isKnowledgeExpanded)}
-              />
+              {/* 已上传文档显示（如果有） */}
+              {documents.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold text-[#86868B] uppercase tracking-wider px-1">
+                    已加载文档 ({documents.length})
+                  </p>
+                  {documents.map((doc) => (
+                    <div key={doc.id} className="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-black/[0.03] group">
+                      <FileText className="w-4 h-4 text-[#007AFF] shrink-0" />
+                      <span className="text-[11px] font-medium text-[#1D1D1F] truncate flex-1">{doc.name}</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#34C759] shrink-0" />
+                      <button
+                        onClick={() => handleDocumentRemove(doc.id)}
+                        className="w-6 h-6 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-50 transition-all"
+                      >
+                        <Trash2 className="w-3 h-3 text-red-500" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* AI 对话区域 */}
-              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
+              <div className="space-y-3 max-h-[450px] overflow-y-auto pr-1 custom-scrollbar">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <div className="w-16 h-16 rounded-full bg-[#F5F5F7] flex items-center justify-center mb-4">
@@ -412,20 +460,64 @@ export const Sidebar = ({
 
       {/* 底部输入框 - 仅在 AI 对话模式下显示 */}
       {activeTab === "chat" && (
-        <footer className="p-6 border-t border-black/[0.03] bg-white">
-          <div className="relative flex items-center gap-3">
+        <footer className="p-6 border-t border-black/[0.03] bg-white relative">
+          {/* 隐藏的文件输入 */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".txt,.md,.html,text/*"
+            onChange={(e) => handleFileUpload(e.target.files)}
+            className="hidden"
+          />
+
+          {/* 上传菜单（展开时显示） */}
+          <AnimatePresence>
+            {isUploadMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-full left-6 right-6 mb-2 p-4 bg-white rounded-2xl border border-black/[0.05] shadow-xl space-y-3"
+              >
+                <div className="flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-[#007AFF]" />
+                  <span className="text-[12px] font-bold text-[#1D1D1F]">上传知识库</span>
+                </div>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-10 border-2 border-dashed border-[#E8E8ED] rounded-xl text-[12px] font-medium text-[#86868B] hover:border-[#007AFF] hover:text-[#007AFF] transition-all"
+                >
+                  {isUploading ? "上传中..." : "选择文件"}
+                </button>
+                <p className="text-[10px] text-[#86868B] text-center">支持 TXT、Markdown、HTML</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="relative flex items-center gap-2">
+            <button
+              onClick={() => setIsUploadMenuOpen(!isUploadMenuOpen)}
+              className="w-12 h-12 rounded-xl border border-black/[0.08] flex items-center justify-center hover:bg-[#F5F5F7] transition-colors shrink-0"
+            >
+              {isUploading ? (
+                <Loader2 className="w-5 h-5 text-[#007AFF] animate-spin" />
+              ) : (
+                <Upload className="w-5 h-5 text-[#86868B]" />
+              )}
+            </button>
             <input 
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-              placeholder={documents.length > 0 ? "向 AI 询问任何细节..." : "上传知识库以解锁高级对话..."}
+              placeholder={documents.length > 0 ? "向 AI 询问任何细节..." : "输入问题或上传知识库..."}
               disabled={isLoading}
-              className="flex-1 h-12 pl-5 pr-5 bg-[#F5F5F7] rounded-2xl text-[14px] font-medium outline-none border border-transparent focus:border-[#007AFF]/30 focus:bg-white transition-all disabled:opacity-50 placeholder:text-[#86868B]"
+              className="flex-1 h-12 pl-5 pr-5 bg-[#F5F5F7] rounded-xl text-[14px] font-medium outline-none border border-transparent focus:border-[#007AFF]/30 focus:bg-white transition-all disabled:opacity-50 placeholder:text-[#86868B]"
             />
             <button 
               onClick={handleSend}
               disabled={isLoading || !input.trim()}
-              className="w-12 h-12 bg-[#007AFF] rounded-2xl flex items-center justify-center shadow-lg shadow-[#007AFF]/20 hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30 disabled:shadow-none"
+              className="w-12 h-12 bg-[#007AFF] rounded-xl flex items-center justify-center hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 text-white animate-spin" />
@@ -437,11 +529,11 @@ export const Sidebar = ({
           <div className="mt-4 flex items-center justify-center gap-6 text-[10px] font-bold text-[#86868B] uppercase tracking-[0.2em]">
             <span className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#34C759]" /> 
-              AI Engine Active
+              AI Active
             </span>
             <span className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#007AFF]" /> 
-              {documents.length} Docs Synced
+              {documents.length} Docs
             </span>
           </div>
         </footer>
