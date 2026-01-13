@@ -193,7 +193,8 @@ export const Sidebar = ({
   onStartGuidance, 
   currentStep, 
   totalSteps, 
-  onNextStep, 
+  onNextStep,
+  onPrevStep,
   isElectron = false,
   currentDemo = "reddit", // 默认改为 reddit，因为用户示例是 Reddit
   onSwitchDemo,
@@ -512,6 +513,15 @@ export const Sidebar = ({
                     )}
 
                     <div className="flex gap-2.5">
+                      {currentStep > 1 && currentStep <= totalSteps && onPrevStep && (
+                        <button
+                          onClick={onPrevStep}
+                          className="h-10 px-3 bg-white border border-[#E8E8ED] text-[#1D1D1F] rounded-xl text-[12px] font-semibold flex items-center justify-center gap-2 hover:bg-[#F5F5F7] transition-colors"
+                        >
+                          <ArrowLeft className="w-4 h-4" />
+                          上一步
+                        </button>
+                      )}
                       <button 
                         onClick={currentStep >= totalSteps ? handleReset : onNextStep}
                         className={cn(
@@ -533,6 +543,15 @@ export const Sidebar = ({
                           </>
                         )}
                       </button>
+                      {currentStep > 0 && currentStep < totalSteps && (
+                        <button
+                          onClick={onNextStep}
+                          className="h-10 px-3 bg-white border border-[#E8E8ED] text-[#1D1D1F] rounded-xl text-[12px] font-semibold flex items-center justify-center gap-2 hover:bg-[#F5F5F7] transition-colors"
+                        >
+                          <SkipForward className="w-4 h-4" />
+                          跳过
+                        </button>
+                      )}
                     </div>
                   </div>
 
