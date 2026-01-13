@@ -116,9 +116,14 @@ export const Sidebar = ({
     setView("setup");
   };
 
+  // 生成唯一消息 ID
+  const generateMessageId = () => {
+    return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  };
+
   const addAssistantMessage = (content: string) => {
     const newMessage: Message = {
-      id: `msg_${Date.now()}`,
+      id: generateMessageId(),
       role: "assistant",
       content,
       timestamp: new Date(),
@@ -130,7 +135,7 @@ export const Sidebar = ({
     if (!input.trim() || isLoading) return;
     
     const userMessage: Message = {
-      id: `msg_${Date.now()}`,
+      id: generateMessageId(),
       role: "user",
       content: input.trim(),
       timestamp: new Date(),
@@ -158,7 +163,7 @@ export const Sidebar = ({
       if (response.ok) {
         const data = await response.json();
         const assistantMessage: Message = {
-          id: `msg_${Date.now()}`,
+          id: generateMessageId(),
           role: "assistant",
           content: data.content,
           timestamp: new Date(),
