@@ -81,16 +81,54 @@ export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic"
 
       {/* 工具栏 */}
       <div className="h-10 bg-[#2D2D2D] flex items-center px-4 gap-2 border-b border-[#3C3C3C]">
-        <button className="px-3 py-1.5 bg-[#007ACC] text-white text-[11px] font-bold rounded hover:bg-[#0066AA] flex items-center gap-1">
+        <button 
+          onClick={() => {
+            if (isActive && currentStep === 5) {
+              onStepClick(5);
+            }
+          }}
+          className={`px-3 py-1.5 text-white text-[11px] font-bold rounded flex items-center gap-1 transition-all ${
+            isActive && currentStep === 5
+              ? "bg-[#007AFF] ring-2 ring-[#007AFF] ring-offset-1 animate-pulse"
+              : "bg-[#007ACC] hover:bg-[#0066AA] active:scale-95"
+          }`}
+        >
           ▶️ Run
         </button>
-        <button className="px-3 py-1.5 bg-[#2D2D2D] text-gray-300 text-[11px] font-medium rounded hover:bg-[#3C3C3C] flex items-center gap-1">
+        <button 
+          onClick={() => {
+            // Debug 按钮交互
+            setActiveBottomTab("debug");
+          }}
+          className="px-3 py-1.5 bg-[#2D2D2D] text-gray-300 text-[11px] font-medium rounded hover:bg-[#3C3C3C] active:scale-95 transition-all flex items-center gap-1"
+        >
           🐛 Debug
         </button>
         <div className="w-px h-6 bg-[#3C3C3C] mx-2" />
-        <button className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] rounded">🔍</button>
-        <button className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] rounded">🔧</button>
-        <button className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] rounded">📦</button>
+        <button 
+          onClick={() => {
+            // 搜索功能
+          }}
+          className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] active:scale-95 rounded transition-all"
+        >
+          🔍
+        </button>
+        <button 
+          onClick={() => {
+            // 设置功能
+          }}
+          className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] active:scale-95 rounded transition-all"
+        >
+          🔧
+        </button>
+        <button 
+          onClick={() => {
+            // 包管理
+          }}
+          className="px-2 py-1.5 text-gray-400 text-[11px] hover:text-white hover:bg-[#3C3C3C] active:scale-95 rounded transition-all"
+        >
+          📦
+        </button>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
@@ -135,13 +173,28 @@ export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic"
                     {file.isActive && <span className="ml-auto text-[10px] text-gray-500">●</span>}
                   </div>
                 ))}
-                <div className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 rounded cursor-pointer">
+                <div 
+                  onClick={() => {
+                    // 文件夹点击交互
+                  }}
+                  className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer transition-all"
+                >
                   <span className="text-blue-400">📁</span> templates
                 </div>
-                <div className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 rounded cursor-pointer">
+                <div 
+                  onClick={() => {
+                    // 文件夹点击交互
+                  }}
+                  className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer transition-all"
+                >
                   <span className="text-blue-400">📁</span> static
                 </div>
-                <div className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 rounded cursor-pointer">
+                <div 
+                  onClick={() => {
+                    // 文件夹点击交互
+                  }}
+                  className="flex items-center gap-2 px-2 py-1.5 text-[12px] text-gray-400 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer transition-all"
+                >
                   <span className="text-blue-400">📁</span> tests
                 </div>
               </div>
@@ -253,8 +306,25 @@ export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic"
               </div>
               <div className="flex-1 overflow-auto p-2 text-[11px] text-gray-400">
                 <div className="space-y-1">
-                  <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer">create_app()</div>
-                  <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer ml-4">Flask</div>
+                  <div 
+                    onClick={() => {
+                      // 结构视图点击
+                      if (activeTab === "main.py") {
+                        // 跳转到对应代码行
+                      }
+                    }}
+                    className="px-2 py-1 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer transition-all"
+                  >
+                    create_app()
+                  </div>
+                  <div 
+                    onClick={() => {
+                      // 结构视图点击
+                    }}
+                    className="px-2 py-1 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer ml-4 transition-all"
+                  >
+                    Flask
+                  </div>
                 </div>
               </div>
             </div>

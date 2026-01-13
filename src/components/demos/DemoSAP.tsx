@@ -55,13 +55,55 @@ export const DemoSAP = ({
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-3 text-[11px] text-white/90">
-          <span className="hover:text-white cursor-pointer">财务</span>
-          <span className="hover:text-white cursor-pointer">销售</span>
-          <span className="hover:text-white cursor-pointer">采购</span>
-          <span className="hover:text-white cursor-pointer">库存</span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            财务
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            销售
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            采购
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            库存
+          </span>
         </div>
-        <Search className="w-4 h-4 text-white" />
-        <Settings className="w-4 h-4 text-white" />
+        <button 
+          onClick={() => {
+            // 搜索功能
+          }}
+          className="p-1.5 hover:bg-white/10 rounded transition-all active:scale-95"
+        >
+          <Search className="w-4 h-4 text-white" />
+        </button>
+        <button 
+          onClick={() => {
+            // 设置功能
+          }}
+          className="p-1.5 hover:bg-white/10 rounded transition-all active:scale-95"
+        >
+          <Settings className="w-4 h-4 text-white" />
+        </button>
       </div>
 
       <div className="flex-1 flex">
@@ -82,15 +124,30 @@ export const DemoSAP = ({
               <FileText className="w-4 h-4" />
               <span>总账</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 菜单点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <FileText className="w-4 h-4" />
               <span>应收账款</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 菜单点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <FileText className="w-4 h-4" />
               <span>应付账款</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 菜单点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <FileText className="w-4 h-4" />
               <span>成本中心</span>
             </div>

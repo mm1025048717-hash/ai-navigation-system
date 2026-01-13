@@ -149,26 +149,61 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
         {/* 左侧导航栏 */}
         <div className="w-64 bg-[#1A1A1B] border-r border-[#343536] p-3 hidden lg:block">
           <div className="space-y-1">
-            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 导航点击交互
+              }}
+              className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>🏠</span> Home
             </div>
-            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 导航点击交互
+              }}
+              className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>🔥</span> Popular
             </div>
-            <div className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 导航点击交互
+              }}
+              className="px-3 py-2 text-white text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>🌐</span> All
             </div>
             <div className="h-px bg-[#343536] my-2" />
-            <div className="px-3 py-2 text-[#FF4500] text-[13px] font-bold hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 子版块点击交互
+              }}
+              className="px-3 py-2 text-[#FF4500] text-[13px] font-bold hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>📁</span> r/programming
             </div>
-            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 子版块点击交互
+              }}
+              className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>💬</span> r/webdev
             </div>
-            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 子版块点击交互
+              }}
+              className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>💻</span> r/javascript
             </div>
-            <div className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] rounded cursor-pointer flex items-center gap-2">
+            <div 
+              onClick={() => {
+                // 子版块点击交互
+              }}
+              className="px-3 py-2 text-gray-400 text-[13px] font-medium hover:bg-[#272729] active:bg-[#343536] rounded cursor-pointer flex items-center gap-2 transition-all"
+            >
               <span>🐍</span> r/Python
             </div>
           </div>
@@ -218,9 +253,25 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
                   <div className="flex gap-3">
                     {/* 投票按钮 */}
                     <div className="flex flex-col items-center gap-1 text-gray-400">
-                      <button className="hover:text-[#FF4500] transition-colors text-[16px]">▲</button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // 投票交互
+                        }}
+                        className="hover:text-[#FF4500] active:scale-110 transition-all text-[16px]"
+                      >
+                        ▲
+                      </button>
                       <span className="text-[12px] font-bold text-white">{post.upvotes > 1000 ? `${(post.upvotes / 1000).toFixed(1)}k` : post.upvotes}</span>
-                      <button className="hover:text-blue-400 transition-colors text-[16px]">▼</button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // 投票交互
+                        }}
+                        className="hover:text-blue-400 active:scale-110 transition-all text-[16px]"
+                      >
+                        ▼
+                      </button>
                     </div>
                     
                     {/* 帖子内容 */}

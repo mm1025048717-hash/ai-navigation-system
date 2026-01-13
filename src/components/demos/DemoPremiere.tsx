@@ -59,14 +59,70 @@ export const DemoPremiere = ({
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-2 text-[11px] text-gray-400">
-          <span>文件</span>
-          <span>编辑</span>
-          <span>剪辑</span>
-          <span>序列</span>
-          <span>标记</span>
-          <span>图形</span>
-          <span>视图</span>
-          <span>窗口</span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            文件
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            编辑
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            剪辑
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            序列
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            标记
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            图形
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            视图
+          </span>
+          <span 
+            onClick={() => {
+              // 菜单点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all px-2 py-1 rounded"
+          >
+            窗口
+          </span>
         </div>
       </div>
 

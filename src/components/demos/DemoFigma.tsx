@@ -143,18 +143,45 @@ export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basi
           </div>
           <div className="flex-1 overflow-auto p-2 text-[11px] text-gray-300">
             <div className="space-y-1">
-              <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer flex items-center gap-2">
+              <div 
+                onClick={() => {
+                  // 图层点击交互
+                }}
+                className="px-2 py-1 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer flex items-center gap-2 transition-all"
+              >
                 <span>📄</span> Page 1
               </div>
               <div className="ml-4 space-y-1">
-                <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer flex items-center gap-2">
+                <div 
+                  onClick={() => {
+                    // 图层点击交互
+                  }}
+                  className="px-2 py-1 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer flex items-center gap-2 transition-all"
+                >
                   <span>📦</span> Frame 1
                 </div>
                 <div className="ml-4 space-y-1">
-                  <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer flex items-center gap-2">
+                  <div 
+                    onClick={() => {
+                      // 图层点击交互
+                      if (isActive && currentStep === 2) {
+                        onStepClick(2);
+                      }
+                    }}
+                    className={`px-2 py-1 rounded cursor-pointer flex items-center gap-2 transition-all ${
+                      isActive && currentStep === 2
+                        ? "bg-[#007AFF]/20 ring-1 ring-[#007AFF] animate-pulse"
+                        : "hover:bg-white/5 active:bg-white/10"
+                    }`}
+                  >
                     <span>⬜</span> Card Component
                   </div>
-                  <div className="px-2 py-1 hover:bg-white/5 rounded cursor-pointer flex items-center gap-2">
+                  <div 
+                    onClick={() => {
+                      // 图层点击交互
+                    }}
+                    className="px-2 py-1 hover:bg-white/5 active:bg-white/10 rounded cursor-pointer flex items-center gap-2 transition-all"
+                  >
                     <span>🔵</span> Button
                   </div>
                 </div>

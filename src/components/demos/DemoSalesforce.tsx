@@ -55,46 +55,118 @@ export const DemoSalesforce = ({
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-3 text-[11px] text-white/90">
-          <span className="hover:text-white cursor-pointer">首页</span>
-          <span className="hover:text-white cursor-pointer">客户</span>
-          <span className="hover:text-white cursor-pointer">销售</span>
-          <span className="hover:text-white cursor-pointer">报表</span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            首页
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            客户
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            销售
+          </span>
+          <span 
+            onClick={() => {
+              // 导航点击
+            }}
+            className="hover:text-white active:opacity-70 cursor-pointer transition-all"
+          >
+            报表
+          </span>
         </div>
-        <Search className="w-4 h-4 text-white" />
-        <Bell className="w-4 h-4 text-white" />
-        <div className="w-6 h-6 rounded-full bg-white/20" />
+        <button 
+          onClick={() => {
+            // 搜索功能
+          }}
+          className="p-1.5 hover:bg-white/10 rounded transition-all active:scale-95"
+        >
+          <Search className="w-4 h-4 text-white" />
+        </button>
+        <button 
+          onClick={() => {
+            // 通知功能
+          }}
+          className="p-1.5 hover:bg-white/10 rounded transition-all active:scale-95 relative"
+        >
+          <Bell className="w-4 h-4 text-white" />
+          <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+        </button>
+        <div 
+          onClick={() => {
+            // 用户菜单
+          }}
+          className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 cursor-pointer transition-all active:scale-95"
+        />
       </div>
 
       <div className="flex-1 flex">
         {/* 左侧导航 */}
         <div className="w-56 bg-white border-r border-gray-200 p-3">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#F3F2F2] text-[12px] font-semibold text-gray-900">
+            <div 
+              onClick={() => {
+                // 导航点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#F3F2F2] text-[12px] font-semibold text-gray-900 cursor-pointer active:scale-[0.98] transition-all"
+            >
               <Target className="w-4 h-4 text-[#1798C1]" />
               <span>首页</span>
             </div>
             <div
               id="view-customers"
-              onClick={() => isActive && currentStep === 2 && onStepClick(2)}
+              onClick={() => {
+                if (isActive && currentStep === 2) {
+                  onStepClick(2);
+                }
+              }}
               className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all text-[12px] text-gray-700",
+                "flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all text-[12px] text-gray-700 active:scale-[0.98]",
                 isActive && currentStep === 2
-                  ? "bg-[#1798C1]/10 text-[#1798C1] ring-2 ring-[#1798C1]/20"
+                  ? "bg-[#1798C1]/10 text-[#1798C1] ring-2 ring-[#1798C1]/20 animate-pulse"
                   : "hover:bg-gray-100"
               )}
             >
               <Users className="w-4 h-4" />
               <span>客户</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 导航点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <TrendingUp className="w-4 h-4" />
               <span>销售机会</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 导航点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <FileText className="w-4 h-4" />
               <span>报表</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer text-[12px] text-gray-700">
+            <div 
+              onClick={() => {
+                // 导航点击
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 active:scale-[0.98] cursor-pointer text-[12px] text-gray-700 transition-all"
+            >
               <Settings className="w-4 h-4" />
               <span>设置</span>
             </div>
