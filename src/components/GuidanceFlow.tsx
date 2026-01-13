@@ -635,6 +635,32 @@ export const GuidanceFlow = ({
               </div>
             </div>
 
+            {/* 连接自定义软件 */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-[#34C759] rounded-full" />
+                <p className="text-[11px] font-bold text-[#86868B] uppercase tracking-wider">自定义软件</p>
+              </div>
+              <button
+                onClick={() => setShowCustomDialog(true)}
+                className={cn(
+                  "w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left",
+                  currentDemo === "custom"
+                    ? "border-[#007AFF] bg-[#007AFF]/5"
+                    : "border-[#E8E8ED] bg-white hover:border-[#34C759]/30"
+                )}
+              >
+                <div className="w-10 h-10 rounded-lg bg-[#34C759]/10 flex items-center justify-center">
+                  <Plus className="w-5 h-5 text-[#34C759]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-[12px] font-bold text-[#1D1D1F]">连接自定义软件</p>
+                  <p className="text-[10px] text-[#86868B] mt-0.5">连接您自己的软件或应用</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-[#86868B]" />
+              </button>
+            </div>
+
             {/* 任务类型选择 */}
             <div className="space-y-3">
               <p className="text-[12px] font-bold text-[#86868B] uppercase tracking-wider">选择任务类型</p>
