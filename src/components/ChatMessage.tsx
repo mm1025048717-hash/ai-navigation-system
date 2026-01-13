@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Wrench, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, Wrench, CheckCircle2, ArrowRight, Sparkles, Target, Navigation, ArrowRightCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ChatMessageProps {
@@ -25,8 +25,16 @@ export function ChatMessage({ content, role }: ChatMessageProps) {
                            content.includes('文档解析') || 
                            content.includes('软件操作分步教学');
 
+  // 检测是否是引导步骤预览消息
+  const isGuidanceStepsMessage = content.includes('已为你生成') && 
+                                  (content.includes('引导步骤') || content.includes('步骤预览'));
+
   if (isWelcomeMessage) {
     return <WelcomeMessage content={content} />;
+  }
+
+  if (isGuidanceStepsMessage) {
+    return <GuidanceStepsPreview content={content} />;
   }
 
   // 普通消息：简单格式化
@@ -313,4 +321,129 @@ function FormattedMessage({ content }: { content: string }) {
   }
 
   return <div className="space-y-1">{elements}</div>;
+}
+
+/**
+ * 引导步骤预览组件 - 高度视觉化
+ */
+function GuidanceStepsPreview({ content }: { content: string }) {
+  // 提取步骤数量
+  const stepsCountMatch = content.match(/已为你生成\s*(\d+)\s*个引导步骤/);
+  const stepsCount = stepsCountMatch ? parseInt(stepsCountMatch[1]) : 0;
+
+  // 提取步骤列表
+  const steps: string[] = [];
+  const lines = content.split('\n');
+  let inStepsSection = false;
+
+  lines.forEach(line => {
+    if (line.includes('步骤预览') || line.includes('生成的步骤')) {
+      inStepsSection = true;
+      return;
+    }
+    if (inStepsSection) {
+      const stepMatch = line.match(/^\d+\.\s*(.+)/);
+      if (stepMatch) {
+        steps.push(stepMatch[1].trim());
+      }
+    }
+  });
+
+  // 提取提示文本（切换到智能引导）
+  const instructionMatch = content.match(/切换到「(.+?)」标签页[，,](.+?)。/);
+  const instruction = instructionMatch ? instructionMatch[0] : '';
+
+  return (
+    <div className="space-y-4">
+      {/* 成功提示卡片 */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-gradient-to-br from-[#E8F5E9] via-white to-[#F1F8E9] rounded-2xl p-4 border border-[#C8E6C9] shadow-sm"
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4CAF50] to-[#66BB6A] flex items-center justify-center shadow-md">
+            <Target className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-[15px] font-bold text-[#1D1D1F] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#4CAF50]" />
+              已为你生成 {stepsCount} 个引导步骤！
+            </h3>
+            {instruction && (
+              <p className="text-[12px] text-[#2E7D32] mt-1 leading-relaxed">
+                {instruction}
+              </p>
+            )}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* 步骤列表卡片 */}
+      {steps.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-[#E3F2FD] via-white to-[#F5F9FF] rounded-2xl p-4 border border-[#BBDEFB] shadow-sm"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2196F3] to-[#42A5F5] flex items-center justify-center">
+              <Navigation className="w-4 h-4 text-white" />
+            </div>
+            <h4 className="text-[14px] font-bold text-[#1D1D1F]">生成的步骤预览</h4>
+          </div>
+
+          <div className="space-y-3">
+            {steps.map((step, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + idx * 0.08 }}
+                className="group relative"
+              >
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-white/80 hover:bg-white transition-all border border-[#E1F5FE] hover:border-[#2196F3] hover:shadow-md">
+                  {/* 步骤编号 */}
+                  <div className="relative shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2196F3] to-[#42A5F5] text-white text-[12px] font-bold flex items-center justify-center shadow-sm">
+                      {idx + 1}
+                    </div>
+                    {idx < steps.length - 1 && (
+                      <div className="absolute top-7 left-1/2 transform -translate-x-1/2 w-0.5 h-6 bg-gradient-to-b from-[#2196F3] to-transparent" />
+                    )}
+                  </div>
+
+                  {/* 步骤内容 */}
+                  <div className="flex-1 pt-0.5 min-w-0">
+                    <p className="text-[13px] text-[#1D1D1F] leading-relaxed font-medium">
+                      {step}
+                    </p>
+                  </div>
+
+                  {/* 箭头图标（悬停时显示） */}
+                  {idx < steps.length - 1 && (
+                    <ArrowRightCircle className="w-4 h-4 text-[#2196F3] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* 底部提示 */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 + steps.length * 0.08 }}
+            className="mt-4 pt-4 border-t border-[#BBDEFB]"
+          >
+            <div className="flex items-center gap-2 text-[11px] text-[#1976D2] font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>切换到「智能引导」标签页开始逐步操作</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </div>
+  );
 }
