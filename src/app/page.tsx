@@ -5,6 +5,15 @@ import { Sidebar } from "@/components/Sidebar";
 import { DemoIDE } from "@/components/demos/DemoIDE";
 import { DemoReddit } from "@/components/demos/DemoReddit";
 import { DemoFigma } from "@/components/demos/DemoFigma";
+import { DemoPremiere } from "@/components/demos/DemoPremiere";
+import { DemoPhotoshop } from "@/components/demos/DemoPhotoshop";
+import { DemoNotion } from "@/components/demos/DemoNotion";
+import { DemoSalesforce } from "@/components/demos/DemoSalesforce";
+import { DemoTableau } from "@/components/demos/DemoTableau";
+import { DemoJira } from "@/components/demos/DemoJira";
+import { DemoSlack } from "@/components/demos/DemoSlack";
+import { DemoSAP } from "@/components/demos/DemoSAP";
+import { DemoHubSpot } from "@/components/demos/DemoHubSpot";
 import { Overlay } from "@/components/Overlay";
 
 type DemoType = "ide" | "reddit" | "figma";
@@ -63,17 +72,36 @@ export default function Home() {
       taskType,
       taskId,
       generatedSteps,
-      totalSteps: generatedSteps.length > 0 ? generatedSteps.length : 4,
+      totalSteps: generatedSteps.length > 0 ? generatedSteps.length : 5,
     };
     
     switch (currentDemo) {
+      // C端软件
       case "ide":
         return <DemoIDE {...props} />;
       case "reddit":
         return <DemoReddit {...props} />;
       case "figma":
         return <DemoFigma {...props} />;
-      // 其他软件暂时使用占位组件
+      case "premiere":
+        return <DemoPremiere {...props} />;
+      case "photoshop":
+        return <DemoPhotoshop {...props} />;
+      case "notion":
+        return <DemoNotion {...props} />;
+      // B端软件
+      case "salesforce":
+        return <DemoSalesforce {...props} />;
+      case "tableau":
+        return <DemoTableau {...props} />;
+      case "jira":
+        return <DemoJira {...props} />;
+      case "slack":
+        return <DemoSlack {...props} />;
+      case "sap":
+        return <DemoSAP {...props} />;
+      case "hubspot":
+        return <DemoHubSpot {...props} />;
       default:
         return (
           <div className="h-full flex items-center justify-center bg-[#F5F5F7] rounded-2xl">
