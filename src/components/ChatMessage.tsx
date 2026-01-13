@@ -42,7 +42,7 @@ export function ChatMessage({ content, role }: ChatMessageProps) {
 }
 
 /**
- * 欢迎消息组件 - 高度视觉化
+ * 欢迎消息组件 - 苹果风格蓝白配色
  */
 function WelcomeMessage({ content }: { content: string }) {
   const lines = content.split('\n').filter(l => l.trim());
@@ -77,87 +77,84 @@ function WelcomeMessage({ content }: { content: string }) {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* 标题 */}
       {title && (
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-[#007AFF]" />
-          <h3 className="text-[15px] font-bold text-[#1D1D1F]">{title}</h3>
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles className="w-3.5 h-3.5 text-[#007AFF]" />
+          <h3 className="text-[13px] font-semibold text-[#1D1D1F]">{title}</h3>
         </div>
       )}
 
-      {/* 文档解析卡片 */}
+      {/* 文档解析卡片 - 苹果风格 */}
       {docPoints.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-[#F0F7FF] to-white rounded-2xl p-4 border border-[#E8F2FF]"
+          className="bg-white rounded-xl p-3 border border-[#E5E5EA] shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl bg-[#007AFF] flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-2.5 mb-2.5">
+            <div className="w-6 h-6 rounded-md bg-[#007AFF] flex items-center justify-center shrink-0">
+              <BookOpen className="w-3.5 h-3.5 text-white" />
             </div>
             <div>
-              <h4 className="text-[13px] font-bold text-[#1D1D1F]">文档解析与指导</h4>
-              <p className="text-[11px] text-[#86868B] mt-0.5">上传软件说明书后，我可以：</p>
+              <h4 className="text-[12px] font-semibold text-[#1D1D1F]">文档解析与指导</h4>
+              <p className="text-[10px] text-[#86868B] mt-0.5">上传软件说明书后，我可以：</p>
             </div>
           </div>
           
-          <div className="space-y-2.5 mt-3">
+          <div className="space-y-2 mt-2.5">
             {docPoints.map((point, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className="flex items-start gap-2.5"
+                transition={{ delay: idx * 0.05 }}
+                className="flex items-start gap-2"
               >
-                <div className="w-5 h-5 rounded-md bg-white border border-[#E8F2FF] flex items-center justify-center shrink-0 mt-0.5">
-                  <CheckCircle2 className="w-3 h-3 text-[#007AFF]" />
+                <div className="w-4 h-4 rounded-md bg-[#007AFF]/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <CheckCircle2 className="w-2.5 h-2.5 text-[#007AFF]" />
                 </div>
-                <span className="text-[12px] text-[#1D1D1F] leading-relaxed font-medium">{point}</span>
+                <span className="text-[11px] text-[#1D1D1F] leading-relaxed">{point}</span>
               </motion.div>
             ))}
           </div>
         </motion.div>
       )}
 
-      {/* 软件操作卡片 */}
+      {/* 软件操作卡片 - 苹果风格 */}
       {steps.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-[#FFF8F0] to-white rounded-2xl p-4 border border-[#FFE8D1]"
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-xl p-3 border border-[#E5E5EA] shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl bg-[#FF9500] flex items-center justify-center">
-              <Wrench className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-2.5 mb-2.5">
+            <div className="w-6 h-6 rounded-md bg-[#007AFF] flex items-center justify-center shrink-0">
+              <Wrench className="w-3.5 h-3.5 text-white" />
             </div>
             <div>
-              <h4 className="text-[13px] font-bold text-[#1D1D1F]">软件操作分步教学</h4>
-              <p className="text-[11px] text-[#86868B] mt-0.5">将复杂操作拆解成简单步骤</p>
+              <h4 className="text-[12px] font-semibold text-[#1D1D1F]">软件操作分步教学</h4>
+              <p className="text-[10px] text-[#86868B] mt-0.5">将复杂操作拆解成简单步骤</p>
             </div>
           </div>
           
-          <div className="space-y-2.5 mt-3">
+          <div className="space-y-2 mt-2.5">
             {steps.map((step, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + idx * 0.1 }}
-                className="flex items-start gap-3 group"
+                transition={{ delay: 0.15 + idx * 0.05 }}
+                className="flex items-start gap-2.5"
               >
-                <div className="w-6 h-6 rounded-lg bg-[#FF9500] text-white text-[11px] font-bold flex items-center justify-center shrink-0 shadow-sm">
+                <div className="w-5 h-5 rounded-md bg-[#007AFF] text-white text-[10px] font-semibold flex items-center justify-center shrink-0">
                   {idx + 1}
                 </div>
                 <div className="flex-1 pt-0.5">
-                  <span className="text-[12px] text-[#1D1D1F] leading-relaxed font-medium">{step}</span>
+                  <span className="text-[11px] text-[#1D1D1F] leading-relaxed">{step}</span>
                 </div>
-                {idx < steps.length - 1 && (
-                  <ArrowRight className="w-3.5 h-3.5 text-[#86868B] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
-                )}
               </motion.div>
             ))}
           </div>
@@ -183,10 +180,10 @@ function FormattedMessage({ content }: { content: string }) {
     if (!trimmed) {
       if (inList && currentList.length > 0) {
         elements.push(
-          <ul key={`list-${idx}`} className="space-y-1.5 my-2">
+          <ul key={`list-${idx}`} className="space-y-1 my-2">
             {currentList.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-[12px]">
-                <span className="text-[#007AFF] mt-1.5 shrink-0">•</span>
+              <li key={i} className="flex items-start gap-2 text-[11px]">
+                <span className="text-[#007AFF] mt-1 shrink-0">•</span>
                 <span className="text-[#1D1D1F] leading-relaxed">{item}</span>
               </li>
             ))}
@@ -198,11 +195,12 @@ function FormattedMessage({ content }: { content: string }) {
       return;
     }
 
-    // 标题
+    // 标题 - 苹果风格
     if (trimmed.startsWith('###')) {
       const text = trimmed.replace(/^###+\s*/, '');
       elements.push(
-        <h3 key={idx} className="text-[14px] font-bold text-[#1D1D1F] mt-4 mb-2 first:mt-0">
+        <h3 key={idx} className="text-[12px] font-semibold text-[#1D1D1F] mt-3 mb-2 first:mt-0 flex items-center gap-1.5">
+          <div className="w-1 h-1 rounded-full bg-[#007AFF]" />
           {text}
         </h3>
       );
@@ -212,18 +210,18 @@ function FormattedMessage({ content }: { content: string }) {
     if (trimmed.startsWith('####')) {
       const text = trimmed.replace(/^####+\s*/, '');
       elements.push(
-        <h4 key={idx} className="text-[13px] font-bold text-[#1D1D1F] mt-3 mb-1.5 first:mt-0">
+        <h4 key={idx} className="text-[11px] font-semibold text-[#1D1D1F] mt-2.5 mb-1.5 first:mt-0">
           {text}
         </h4>
       );
       return;
     }
 
-    // 粗体文本
+    // 粗体文本 - 苹果风格
     if (trimmed.startsWith('**') && trimmed.endsWith('**')) {
       const text = trimmed.replace(/\*\*/g, '');
       elements.push(
-        <p key={idx} className="text-[13px] font-bold text-[#1D1D1F] my-2">
+        <p key={idx} className="text-[12px] font-semibold text-[#1D1D1F] my-1.5">
           {text}
         </p>
       );
@@ -238,26 +236,26 @@ function FormattedMessage({ content }: { content: string }) {
       return;
     }
 
-    // 编号列表
+    // 编号列表 - 苹果风格
     if (trimmed.match(/^\d+\.\s+/)) {
       const text = trimmed.replace(/^\d+\.\s+/, '');
       if (!inList || currentList.length === 0) {
         elements.push(
-          <div key={idx} className="flex items-start gap-2 my-1.5">
-            <span className="text-[#007AFF] font-bold text-[11px] mt-0.5 shrink-0">
-              {trimmed.match(/^\d+/)?.[0]}.
+          <div key={idx} className="flex items-start gap-2 my-1">
+            <span className="w-5 h-5 rounded-md bg-[#007AFF]/10 text-[#007AFF] font-semibold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+              {trimmed.match(/^\d+/)?.[0]}
             </span>
-            <span className="text-[12px] text-[#1D1D1F] leading-relaxed flex-1">{text}</span>
+            <span className="text-[11px] text-[#1D1D1F] leading-relaxed flex-1 pt-0.5">{text}</span>
           </div>
         );
       } else {
         // 先处理之前的列表
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-before-${idx}`} className="space-y-1.5 my-2">
+            <ul key={`list-before-${idx}`} className="space-y-1 my-2">
               {currentList.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-[12px]">
-                  <span className="text-[#007AFF] mt-1.5 shrink-0">•</span>
+                <li key={i} className="flex items-start gap-2 text-[11px]">
+                  <span className="text-[#007AFF] mt-1 shrink-0">•</span>
                   <span className="text-[#1D1D1F] leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -268,11 +266,11 @@ function FormattedMessage({ content }: { content: string }) {
         // 然后添加编号项
         const text = trimmed.replace(/^\d+\.\s+/, '');
         elements.push(
-          <div key={idx} className="flex items-start gap-2 my-1.5">
-            <span className="text-[#007AFF] font-bold text-[11px] mt-0.5 shrink-0">
-              {trimmed.match(/^\d+/)?.[0]}.
+          <div key={idx} className="flex items-start gap-2 my-1">
+            <span className="w-5 h-5 rounded-md bg-[#007AFF]/10 text-[#007AFF] font-semibold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+              {trimmed.match(/^\d+/)?.[0]}
             </span>
-            <span className="text-[12px] text-[#1D1D1F] leading-relaxed flex-1">{text}</span>
+            <span className="text-[11px] text-[#1D1D1F] leading-relaxed flex-1 pt-0.5">{text}</span>
           </div>
         );
         inList = false;
@@ -282,14 +280,14 @@ function FormattedMessage({ content }: { content: string }) {
 
     // 普通段落
     if (!inList) {
-      // 处理内联粗体
+      // 处理内联粗体 - 苹果风格
       const parts = trimmed.split(/(\*\*.+?\*\*)/g);
       if (parts.length > 1) {
         elements.push(
-          <p key={idx} className="text-[12px] text-[#1D1D1F] leading-relaxed my-1.5">
+          <p key={idx} className="text-[11px] text-[#1D1D1F] leading-relaxed my-1">
             {parts.map((part, i) => 
               part.startsWith('**') && part.endsWith('**') ? (
-                <strong key={i} className="font-bold">{part.replace(/\*\*/g, '')}</strong>
+                <strong key={i} className="font-semibold">{part.replace(/\*\*/g, '')}</strong>
               ) : (
                 <span key={i}>{part}</span>
               )
@@ -298,7 +296,7 @@ function FormattedMessage({ content }: { content: string }) {
         );
       } else {
         elements.push(
-          <p key={idx} className="text-[12px] text-[#1D1D1F] leading-relaxed my-1.5">
+          <p key={idx} className="text-[11px] text-[#1D1D1F] leading-relaxed my-1">
             {trimmed}
           </p>
         );
@@ -324,7 +322,7 @@ function FormattedMessage({ content }: { content: string }) {
 }
 
 /**
- * 引导步骤预览组件 - 高度视觉化
+ * 引导步骤预览组件 - 苹果风格蓝白配色
  */
 function GuidanceStepsPreview({ content }: { content: string }) {
   // 提取步骤数量
@@ -354,24 +352,23 @@ function GuidanceStepsPreview({ content }: { content: string }) {
   const instruction = instructionMatch ? instructionMatch[0] : '';
 
   return (
-    <div className="space-y-4">
-      {/* 成功提示卡片 */}
+    <div className="space-y-3">
+      {/* 成功提示卡片 - 苹果风格 */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-[#E8F5E9] via-white to-[#F1F8E9] rounded-2xl p-4 border border-[#C8E6C9] shadow-sm"
+        className="bg-white rounded-xl p-3 border border-[#E5E5EA] shadow-sm"
       >
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4CAF50] to-[#66BB6A] flex items-center justify-center shadow-md">
-            <Target className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-[#007AFF] flex items-center justify-center shrink-0">
+            <Target className="w-3.5 h-3.5 text-white" />
           </div>
-          <div className="flex-1">
-            <h3 className="text-[15px] font-bold text-[#1D1D1F] flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#4CAF50]" />
-              已为你生成 {stepsCount} 个引导步骤！
+          <div className="flex-1 min-w-0">
+            <h3 className="text-[13px] font-semibold text-[#1D1D1F] leading-tight">
+              已为你生成 <span className="text-[#007AFF] font-bold">{stepsCount}</span> 个引导步骤
             </h3>
             {instruction && (
-              <p className="text-[12px] text-[#2E7D32] mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#86868B] mt-1 leading-snug">
                 {instruction}
               </p>
             )}
@@ -379,67 +376,60 @@ function GuidanceStepsPreview({ content }: { content: string }) {
         </div>
       </motion.div>
 
-      {/* 步骤列表卡片 */}
+      {/* 步骤列表卡片 - 苹果风格 */}
       {steps.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-[#E3F2FD] via-white to-[#F5F9FF] rounded-2xl p-4 border border-[#BBDEFB] shadow-sm"
+          transition={{ delay: 0.05 }}
+          className="bg-white rounded-xl p-3 border border-[#E5E5EA] shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2196F3] to-[#42A5F5] flex items-center justify-center">
-              <Navigation className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-6 h-6 rounded-md bg-[#007AFF]/10 flex items-center justify-center">
+              <Navigation className="w-3.5 h-3.5 text-[#007AFF]" />
             </div>
-            <h4 className="text-[14px] font-bold text-[#1D1D1F]">生成的步骤预览</h4>
+            <h4 className="text-[12px] font-semibold text-[#1D1D1F]">步骤预览</h4>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {steps.map((step, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, x: -10 }}
+                initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.15 + idx * 0.08 }}
-                className="group relative"
+                transition={{ delay: 0.08 + idx * 0.05 }}
+                className="group flex items-start gap-2.5"
               >
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-white/80 hover:bg-white transition-all border border-[#E1F5FE] hover:border-[#2196F3] hover:shadow-md">
-                  {/* 步骤编号 */}
-                  <div className="relative shrink-0">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2196F3] to-[#42A5F5] text-white text-[12px] font-bold flex items-center justify-center shadow-sm">
-                      {idx + 1}
-                    </div>
-                    {idx < steps.length - 1 && (
-                      <div className="absolute top-7 left-1/2 transform -translate-x-1/2 w-0.5 h-6 bg-gradient-to-b from-[#2196F3] to-transparent" />
-                    )}
+                {/* 步骤编号 - 苹果风格 */}
+                <div className="relative shrink-0">
+                  <div className="w-5 h-5 rounded-md bg-[#007AFF] text-white text-[10px] font-semibold flex items-center justify-center">
+                    {idx + 1}
                   </div>
-
-                  {/* 步骤内容 */}
-                  <div className="flex-1 pt-0.5 min-w-0">
-                    <p className="text-[13px] text-[#1D1D1F] leading-relaxed font-medium">
-                      {step}
-                    </p>
-                  </div>
-
-                  {/* 箭头图标（悬停时显示） */}
                   {idx < steps.length - 1 && (
-                    <ArrowRightCircle className="w-4 h-4 text-[#2196F3] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
+                    <div className="absolute top-5 left-1/2 transform -translate-x-1/2 w-[1px] h-3 bg-[#E5E5EA]" />
                   )}
+                </div>
+
+                {/* 步骤内容 */}
+                <div className="flex-1 pt-0.5 min-w-0">
+                  <p className="text-[12px] text-[#1D1D1F] leading-relaxed">
+                    {step}
+                  </p>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* 底部提示 */}
+          {/* 底部提示 - 苹果风格 */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 + steps.length * 0.08 }}
-            className="mt-4 pt-4 border-t border-[#BBDEFB]"
+            transition={{ delay: 0.15 + steps.length * 0.05 }}
+            className="mt-3 pt-3 border-t border-[#E5E5EA]"
           >
-            <div className="flex items-center gap-2 text-[11px] text-[#1976D2] font-medium">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>切换到「智能引导」标签页开始逐步操作</span>
+            <div className="flex items-center gap-1.5 text-[10px] text-[#007AFF] font-medium">
+              <CheckCircle2 className="w-3 h-3" />
+              <span>切换到「智能引导」开始操作</span>
             </div>
           </motion.div>
         </motion.div>
