@@ -431,7 +431,7 @@ export const GuidanceFlow = ({
               // 如果API失败，使用预设步骤
               setGeneratedSteps(selectedTask.steps);
             } else if (taskType === "basic") {
-              setGeneratedSteps(BASIC_TASKS[currentDemo]);
+              setGeneratedSteps(BASIC_TASKS[currentDemo] || []);
             }
             setIsGenerating(false);
             setCurrentStep(3);
@@ -442,7 +442,7 @@ export const GuidanceFlow = ({
             if (selectedTask) {
               setGeneratedSteps(selectedTask.steps);
             } else if (taskType === "basic") {
-              setGeneratedSteps(BASIC_TASKS[currentDemo]);
+              setGeneratedSteps(BASIC_TASKS[currentDemo] || []);
             }
             setIsGenerating(false);
             setCurrentStep(3);
@@ -656,7 +656,7 @@ export const GuidanceFlow = ({
               {taskType === "basic" ? (
                 <button
                   onClick={() => {
-                    setGeneratedSteps(BASIC_TASKS[currentDemo]);
+                    setGeneratedSteps(BASIC_TASKS[currentDemo] || []);
                     setCurrentStep(2);
                   }}
                   className="w-full h-12 bg-[#007AFF] text-white rounded-xl text-[13px] font-bold hover:bg-[#0063CE] transition-all"
@@ -665,7 +665,7 @@ export const GuidanceFlow = ({
                 </button>
               ) : (
                 <div className="space-y-2">
-                  {ADVANCED_TASKS[currentDemo].map((task) => (
+                  {(ADVANCED_TASKS[currentDemo] || []).map((task) => (
                     <button
                       key={task.id}
                       onClick={() => {
@@ -744,7 +744,7 @@ export const GuidanceFlow = ({
                   if (selectedTask) {
                     setGeneratedSteps(selectedTask.steps);
                   } else {
-                    setGeneratedSteps(BASIC_TASKS[currentDemo]);
+                    setGeneratedSteps(BASIC_TASKS[currentDemo] || []);
                   }
                   setCurrentStep(3);
                 }}
