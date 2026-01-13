@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { vectorStore } from "@/lib/vector-store";
 import { getKnowledgeContext } from "@/lib/knowledge-store";
 import { getChatModel, createPlanPrompt, stringParser } from "@/lib/langchain-config";
+import { cacheManager, generateCacheKey } from "@/lib/cache-manager";
 
 /**
  * 任务规划器 API - 基于知识库生成引导步骤
@@ -16,6 +17,16 @@ export async function POST(request: NextRequest) {
         { error: "缺少任务描述" },
         { status: 400 }
       );
+    }
+
+    // 检查缓存
+    const cacheKey = generateCacheKey("plan", task, currentDemo, documents?.length || 0);
+    const cached = cacheManager.get<any>(cacheKey);
+    if (cached) {
+      return NextResponse.json({
+        ...cached,
+        cached: true,
+      });
     }
 
     // 1. 从知识库中检索相关内容（RAG）
@@ -123,7 +134,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({
+    const result = {
       steps,
       estimatedTime,
       difficulty,
@@ -132,7 +143,12 @@ export async function POST(request: NextRequest) {
       subTasks,
       relevantChunksCount: relevantChunks.length,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    // 缓存结果（1小时）
+    cacheManager.set(cacheKey, result, 3600000);
+
+    return NextResponse.json(result);
   } catch (error: any) {
     console.error("Plan API error:", error);
     return NextResponse.json(

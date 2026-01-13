@@ -200,6 +200,9 @@ export default function Home() {
             const maxSteps = generatedSteps.length > 0 ? generatedSteps.length : 4;
             setCurrentStep(prev => Math.min(prev + 1, maxSteps));
           }}
+          onPrevStep={() => {
+            setCurrentStep(prev => Math.max(prev - 1, 1));
+          }}
           isElectron={isElectron}
           currentDemo={currentDemo}
           onSwitchDemo={handleSwitchDemo}

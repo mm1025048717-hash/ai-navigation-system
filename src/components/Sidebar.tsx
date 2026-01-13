@@ -58,6 +58,7 @@ interface SidebarProps {
   currentStep: number;
   totalSteps: number;
   onNextStep: () => void;
+  onPrevStep?: () => void;
   isElectron?: boolean;
   currentDemo?: DemoType;
   onSwitchDemo?: (demo: DemoType) => void;
@@ -500,6 +501,15 @@ export const Sidebar = ({
                     <p className="text-[13px] leading-relaxed font-semibold text-[#1D1D1F] px-1">
                       {stepMessage}
                     </p>
+
+                    {/* 错误恢复提示 */}
+                    {currentStep > 0 && currentStep < totalSteps && (
+                      <div className="p-2 bg-[#FFF3CD]/30 border border-[#FFC107]/20 rounded-lg">
+                        <p className="text-[10px] text-[#86868B]">
+                          如果无法找到目标元素，可以点击"跳过"或"上一步"按钮
+                        </p>
+                      </div>
+                    )}
 
                     <div className="flex gap-2.5">
                       <button 
