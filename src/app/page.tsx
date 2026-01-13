@@ -16,7 +16,19 @@ import { DemoSAP } from "@/components/demos/DemoSAP";
 import { DemoHubSpot } from "@/components/demos/DemoHubSpot";
 import { Overlay } from "@/components/Overlay";
 
-type DemoType = "ide" | "reddit" | "figma";
+type DemoType = 
+  | "ide" 
+  | "reddit" 
+  | "figma" 
+  | "premiere" 
+  | "photoshop" 
+  | "notion" 
+  | "salesforce" 
+  | "tableau" 
+  | "jira" 
+  | "slack" 
+  | "sap" 
+  | "hubspot";
 
 type TaskType = "basic" | "advanced";
 
