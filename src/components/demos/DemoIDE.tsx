@@ -19,6 +19,22 @@ export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic"
   const isDebugComplex = taskId === "debug-complex";
   const [activeTab, setActiveTab] = useState("main.py");
   const [activeBottomTab, setActiveBottomTab] = useState("terminal");
+  const [codeContent, setCodeContent] = useState({
+    "main.py": `from flask import Flask
+from config import settings
+
+def create_app():
+    # TODO: 初始化应用
+    app = Flask(__name__)
+    return app`,
+    "config.py": `class Config:
+    SECRET_KEY = 'your-secret-key'`,
+    "utils.py": `def helper_function():
+    pass`,
+  });
+  const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
   
   // 根据步骤内容动态确定可点击元素
   const getStepTarget = (stepIndex: number) => {
@@ -86,14 +102,32 @@ export const DemoIDE = ({ currentStep, isActive, onStepClick, taskType = "basic"
             if (isActive && currentStep === 5) {
               onStepClick(5);
             }
+            // 运行代码
+            setIsRunning(true);
+            setActiveBottomTab("terminal");
+            setTerminalOutput([]);
+            setErrors([]);
+            
+            // 模拟运行过程
+            setTimeout(() => {
+              setTerminalOutput([
+                "$ python main.py",
+                " * Running on http://127.0.0.1:5000",
+                " * Press CTRL+C to quit"
+              ]);
+              setIsRunning(false);
+            }, 1000);
           }}
+          disabled={isRunning}
           className={`px-3 py-1.5 text-white text-[11px] font-bold rounded flex items-center gap-1 transition-all ${
             isActive && currentStep === 5
               ? "bg-[#007AFF] ring-2 ring-[#007AFF] ring-offset-1 animate-pulse"
+              : isRunning
+              ? "bg-[#007ACC]/50 cursor-not-allowed"
               : "bg-[#007ACC] hover:bg-[#0066AA] active:scale-95"
           }`}
         >
-          ▶️ Run
+          {isRunning ? "⏳ Running..." : "▶️ Run"}
         </button>
         <button 
           onClick={() => {

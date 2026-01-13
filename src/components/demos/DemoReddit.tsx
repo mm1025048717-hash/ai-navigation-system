@@ -17,6 +17,14 @@ export const DemoReddit = ({ currentStep, isActive, onStepClick, taskType = "bas
   const isAdvanced = taskType === "advanced";
   const isGainFollowers = taskId === "gain-followers";
   const [selectedSort, setSelectedSort] = useState("Hot");
+  const [postVotes, setPostVotes] = useState<Record<number, number>>({
+    1: 2400,
+    2: 1800,
+    3: 1200,
+  });
+  const [userVotes, setUserVotes] = useState<Record<number, "up" | "down" | null>>({});
+  const [expandedPosts, setExpandedPosts] = useState<Set<number>>(new Set());
+  const [showComments, setShowComments] = useState<Record<number, boolean>>({});
   
   // 根据步骤内容动态确定可点击元素
   const getStepTarget = (stepIndex: number) => {

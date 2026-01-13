@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Target, Users, TrendingUp, FileText, Settings, Bell, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,15 @@ export const DemoSalesforce = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoSalesforceProps) => {
+  const [customers, setCustomers] = useState([
+    { id: 1, name: "Acme Corp", email: "contact@acme.com", status: "Active", value: "$50,000" },
+    { id: 2, name: "TechStart Inc", email: "hello@techstart.com", status: "Active", value: "$30,000" },
+    { id: 3, name: "Global Solutions", email: "info@global.com", status: "Inactive", value: "$75,000" },
+  ]);
+  const [selectedCustomer, setSelectedCustomer] = useState<number | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", value: "" });
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];
