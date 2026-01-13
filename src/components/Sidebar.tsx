@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { KnowledgeUpload, UploadedDoc } from "./KnowledgeUpload";
+import { GuidanceFlow } from "./GuidanceFlow";
 
 type DemoType = "ide" | "reddit" | "figma";
 type TabType = "guidance" | "chat";
@@ -240,81 +241,15 @@ export const Sidebar = ({
               className="space-y-6"
             >
               {view === "setup" ? (
-                <>
-                  {/* 场景选择器 */}
-                  <div className="space-y-4">
-                    <div className="text-[11px] font-bold text-[#86868B] uppercase tracking-[0.15em] px-1">
-                      选择任务环境
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      {(Object.keys(DEMO_INFO) as DemoType[]).map((demo) => {
-                        const info = DEMO_INFO[demo];
-                        const Icon = info.icon;
-                        return (
-                          <button
-                            key={demo}
-                            onClick={() => onSwitchDemo?.(demo)}
-                            className={cn(
-                              "flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all duration-300",
-                              currentDemo === demo 
-                                ? "bg-white border-[#007AFF] shadow-[0_8px_20px_rgba(0,122,255,0.12)] ring-1 ring-[#007AFF]" 
-                                : "bg-[#F5F5F7] border-transparent hover:bg-[#E8E8ED]"
-                            )}
-                          >
-                            <div 
-                              className={cn(
-                                "w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300",
-                                currentDemo === demo ? "scale-110" : ""
-                              )}
-                              style={{ backgroundColor: currentDemo === demo ? '#007AFF10' : 'white' }}
-                            >
-                              <Icon className="w-5 h-5" style={{ color: currentDemo === demo ? '#007AFF' : '#86868B' }} />
-                            </div>
-                            <span className={cn(
-                              "text-[12px] font-bold",
-                              currentDemo === demo ? "text-[#007AFF]" : "text-[#86868B]"
-                            )}>
-                              {info.name}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* 当前场景信息 */}
-                  <div className="p-5 bg-white rounded-[24px] border border-black/[0.05] shadow-sm space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div 
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                        style={{ backgroundColor: `${demoInfo.color}10` }}
-                      >
-                        <demoInfo.icon className="w-6 h-6" style={{ color: demoInfo.color }} />
-                      </div>
-                      <div>
-                        <h3 className="text-[15px] font-bold text-[#1D1D1F]">{demoInfo.name} 辅助模式</h3>
-                        <p className="text-[12px] text-[#86868B] mt-0.5">{demoInfo.description}</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={handleStart}
-                      className="w-full h-12 bg-[#007AFF] text-white rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 hover:bg-[#0063CE] active:scale-[0.98] transition-all shadow-lg shadow-[#007AFF]/20"
-                    >
-                      <Eye className="w-4.5 h-4.5" />
-                      开启智能引导
-                    </button>
-                  </div>
-
-                  {/* 特性说明 */}
-                  <div className="space-y-2.5 px-1">
-                    <div className="flex items-center gap-3 text-[12px] text-[#86868B] font-medium">
-                      <div className="w-5 h-5 rounded-full bg-[#E8F2FF] flex items-center justify-center">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#007AFF]" />
-                      </div>
-                      <span>交互式视觉高亮与路径导航</span>
-                    </div>
-                  </div>
-                </>
+                <GuidanceFlow
+                  documents={documents}
+                  currentDemo={currentDemo}
+                  onDemoSelect={(demo) => {
+                    onSwitchDemo?.(demo);
+                  }}
+                  onStart={handleStart}
+                  isGenerating={false}
+                />
               ) : (
                 <div className="space-y-5">
                   {/* 当前任务状态 */}
