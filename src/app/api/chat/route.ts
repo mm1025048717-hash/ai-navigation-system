@@ -23,14 +23,15 @@ export async function POST(request: NextRequest) {
       // 构建消息链
       const chain = prompt.pipe(model).pipe(stringParser);
       
-      // 转换消息格式为 LangChain 格式
+      // 转换消息格式为 LangChain 格式（HumanMessage/AIMessage）
+      const { HumanMessage, AIMessage } = await import('@langchain/core/messages');
       const langchainMessages = messages.map((m: any) => {
         if (m.role === 'user') {
-          return ['user', m.content];
+          return new HumanMessage(m.content);
         } else if (m.role === 'assistant') {
-          return ['assistant', m.content];
+          return new AIMessage(m.content);
         } else {
-          return ['user', m.content];
+          return new HumanMessage(m.content);
         }
       });
       
