@@ -24,13 +24,16 @@ export const DemoHubSpot = ({
   totalSteps = 5,
 }: DemoHubSpotProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('创建') || stepContent.includes('活动')) return 'create-campaign';
-      if (stepContent.includes('工作流') || stepContent.includes('设置')) return 'set-workflow';
-      if (stepContent.includes('邮件') || stepContent.includes('模板')) return 'design-email';
-      if (stepContent.includes('自动化') || stepContent.includes('配置')) return 'configure-auto';
-      if (stepContent.includes('分析') || stepContent.includes('效果')) return 'analyze-results';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('创建') || lowerContent.includes('活动')) return 'create-campaign';
+        if (lowerContent.includes('工作流') || lowerContent.includes('设置')) return 'set-workflow';
+        if (lowerContent.includes('邮件') || lowerContent.includes('模板')) return 'design-email';
+        if (lowerContent.includes('自动化') || lowerContent.includes('配置')) return 'configure-auto';
+        if (lowerContent.includes('分析') || lowerContent.includes('效果')) return 'analyze-results';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'create-campaign',

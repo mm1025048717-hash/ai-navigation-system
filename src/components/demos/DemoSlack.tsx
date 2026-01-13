@@ -24,13 +24,16 @@ export const DemoSlack = ({
   totalSteps = 5,
 }: DemoSlackProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('创建') || stepContent.includes('频道')) return 'create-channel';
-      if (stepContent.includes('邀请') || stepContent.includes('成员')) return 'invite-member';
-      if (stepContent.includes('发送') || stepContent.includes('消息')) return 'send-message';
-      if (stepContent.includes('集成') || stepContent.includes('设置')) return 'set-integration';
-      if (stepContent.includes('通知') || stepContent.includes('管理')) return 'manage-notification';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('创建') || lowerContent.includes('频道')) return 'create-channel';
+        if (lowerContent.includes('邀请') || lowerContent.includes('成员')) return 'invite-member';
+        if (lowerContent.includes('发送') || lowerContent.includes('消息')) return 'send-message';
+        if (lowerContent.includes('集成') || lowerContent.includes('设置')) return 'set-integration';
+        if (lowerContent.includes('通知') || lowerContent.includes('管理')) return 'manage-notification';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'create-channel',

@@ -24,13 +24,16 @@ export const DemoPhotoshop = ({
   totalSteps = 5,
 }: DemoPhotoshopProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('打开') || stepContent.includes('文件')) return 'open-file';
-      if (stepContent.includes('工具') || stepContent.includes('选择')) return 'select-tool';
-      if (stepContent.includes('调整') || stepContent.includes('参数')) return 'adjust-params';
-      if (stepContent.includes('图层') || stepContent.includes('效果')) return 'apply-effect';
-      if (stepContent.includes('保存') || stepContent.includes('导出')) return 'save-file';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('打开') || lowerContent.includes('文件')) return 'open-file';
+        if (lowerContent.includes('工具') || lowerContent.includes('选择')) return 'select-tool';
+        if (lowerContent.includes('调整') || lowerContent.includes('参数')) return 'adjust-params';
+        if (lowerContent.includes('图层') || lowerContent.includes('效果')) return 'apply-effect';
+        if (lowerContent.includes('保存') || lowerContent.includes('导出')) return 'save-file';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'open-file',

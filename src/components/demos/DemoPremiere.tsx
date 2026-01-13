@@ -25,13 +25,16 @@ export const DemoPremiere = ({
 }: DemoPremiereProps) => {
   // 动态步骤映射
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('导入') || stepContent.includes('素材')) return 'import-media';
-      if (stepContent.includes('序列') || stepContent.includes('时间轴')) return 'create-sequence';
-      if (stepContent.includes('剪辑') || stepContent.includes('片段')) return 'edit-clip';
-      if (stepContent.includes('音频') || stepContent.includes('轨道')) return 'add-audio';
-      if (stepContent.includes('导出') || stepContent.includes('渲染')) return 'export-video';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('导入') || lowerContent.includes('素材')) return 'import-media';
+        if (lowerContent.includes('序列') || lowerContent.includes('时间轴')) return 'create-sequence';
+        if (lowerContent.includes('剪辑') || lowerContent.includes('片段')) return 'edit-clip';
+        if (lowerContent.includes('音频') || lowerContent.includes('轨道')) return 'add-audio';
+        if (lowerContent.includes('导出') || lowerContent.includes('渲染')) return 'export-video';
+      }
     }
     // 默认映射
     const defaultMap: Record<number, string> = {

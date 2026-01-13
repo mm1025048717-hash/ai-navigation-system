@@ -24,13 +24,16 @@ export const DemoJira = ({
   totalSteps = 5,
 }: DemoJiraProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('创建') || stepContent.includes('项目')) return 'create-project';
-      if (stepContent.includes('任务') || stepContent.includes('添加')) return 'add-task';
-      if (stepContent.includes('工作流') || stepContent.includes('流程')) return 'set-workflow';
-      if (stepContent.includes('分配') || stepContent.includes('成员')) return 'assign-task';
-      if (stepContent.includes('跟踪') || stepContent.includes('进度')) return 'track-progress';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('创建') || lowerContent.includes('项目')) return 'create-project';
+        if (lowerContent.includes('任务') || lowerContent.includes('添加')) return 'add-task';
+        if (lowerContent.includes('工作流') || lowerContent.includes('流程')) return 'set-workflow';
+        if (lowerContent.includes('分配') || lowerContent.includes('成员')) return 'assign-task';
+        if (lowerContent.includes('跟踪') || lowerContent.includes('进度')) return 'track-progress';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'create-project',

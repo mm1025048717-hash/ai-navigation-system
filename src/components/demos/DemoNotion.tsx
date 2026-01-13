@@ -24,13 +24,16 @@ export const DemoNotion = ({
   totalSteps = 5,
 }: DemoNotionProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('创建') || stepContent.includes('页面')) return 'create-page';
-      if (stepContent.includes('内容') || stepContent.includes('块')) return 'add-block';
-      if (stepContent.includes('模板') || stepContent.includes('设置')) return 'set-template';
-      if (stepContent.includes('结构') || stepContent.includes('组织')) return 'organize';
-      if (stepContent.includes('分享')) return 'share-page';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('创建') || lowerContent.includes('页面')) return 'create-page';
+        if (lowerContent.includes('内容') || lowerContent.includes('块')) return 'add-block';
+        if (lowerContent.includes('模板') || lowerContent.includes('设置')) return 'set-template';
+        if (lowerContent.includes('结构') || lowerContent.includes('组织')) return 'organize';
+        if (lowerContent.includes('分享')) return 'share-page';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'create-page',

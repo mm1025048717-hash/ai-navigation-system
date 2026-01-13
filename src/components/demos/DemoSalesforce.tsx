@@ -24,13 +24,16 @@ export const DemoSalesforce = ({
   totalSteps = 5,
 }: DemoSalesforceProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('登录') || stepContent.includes('系统')) return 'login';
-      if (stepContent.includes('客户') || stepContent.includes('列表')) return 'view-customers';
-      if (stepContent.includes('销售') || stepContent.includes('机会')) return 'create-opportunity';
-      if (stepContent.includes('更新') || stepContent.includes('信息')) return 'update-info';
-      if (stepContent.includes('报告') || stepContent.includes('生成')) return 'generate-report';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('登录') || lowerContent.includes('系统')) return 'login';
+        if (lowerContent.includes('客户') || lowerContent.includes('列表')) return 'view-customers';
+        if (lowerContent.includes('销售') || lowerContent.includes('机会')) return 'create-opportunity';
+        if (lowerContent.includes('更新') || lowerContent.includes('信息')) return 'update-info';
+        if (lowerContent.includes('报告') || lowerContent.includes('生成')) return 'generate-report';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'login',

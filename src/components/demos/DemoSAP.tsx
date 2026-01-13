@@ -24,13 +24,16 @@ export const DemoSAP = ({
   totalSteps = 5,
 }: DemoSAPProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('登录') || stepContent.includes('系统')) return 'login';
-      if (stepContent.includes('模块') || stepContent.includes('访问')) return 'access-module';
-      if (stepContent.includes('单据') || stepContent.includes('创建')) return 'create-document';
-      if (stepContent.includes('审核') || stepContent.includes('流程')) return 'review-process';
-      if (stepContent.includes('报表') || stepContent.includes('生成')) return 'generate-report';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('登录') || lowerContent.includes('系统')) return 'login';
+        if (lowerContent.includes('模块') || lowerContent.includes('访问')) return 'access-module';
+        if (lowerContent.includes('单据') || lowerContent.includes('创建')) return 'create-document';
+        if (lowerContent.includes('审核') || lowerContent.includes('流程')) return 'review-process';
+        if (lowerContent.includes('报表') || lowerContent.includes('生成')) return 'generate-report';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'login',

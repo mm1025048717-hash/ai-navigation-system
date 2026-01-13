@@ -24,13 +24,16 @@ export const DemoTableau = ({
   totalSteps = 5,
 }: DemoTableauProps) => {
   const getStepTarget = (step: number): string | null => {
-    if (generatedSteps.length > 0 && step <= generatedSteps.length) {
-      const stepContent = generatedSteps[step - 1].toLowerCase();
-      if (stepContent.includes('连接') || stepContent.includes('数据源')) return 'connect-source';
-      if (stepContent.includes('字段') || stepContent.includes('选择')) return 'select-fields';
-      if (stepContent.includes('可视化') || stepContent.includes('图表')) return 'create-viz';
-      if (stepContent.includes('筛选') || stepContent.includes('交互')) return 'set-filter';
-      if (stepContent.includes('发布') || stepContent.includes('仪表板')) return 'publish-dashboard';
+    if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
+      const stepContent = generatedSteps[step - 1];
+      if (stepContent && typeof stepContent === 'string') {
+        const lowerContent = stepContent.toLowerCase();
+        if (lowerContent.includes('连接') || lowerContent.includes('数据源')) return 'connect-source';
+        if (lowerContent.includes('字段') || lowerContent.includes('选择')) return 'select-fields';
+        if (lowerContent.includes('可视化') || lowerContent.includes('图表')) return 'create-viz';
+        if (lowerContent.includes('筛选') || lowerContent.includes('交互')) return 'set-filter';
+        if (lowerContent.includes('发布') || lowerContent.includes('仪表板')) return 'publish-dashboard';
+      }
     }
     const defaultMap: Record<number, string> = {
       1: 'connect-source',
