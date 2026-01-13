@@ -87,7 +87,7 @@ export const Sidebar = ({
   totalSteps, 
   onNextStep, 
   isElectron = false,
-  currentDemo = "ide",
+  currentDemo = "reddit", // 默认改为 reddit，因为用户示例是 Reddit
   onSwitchDemo,
   generatedSteps = []
 }: SidebarProps) => {
@@ -131,6 +131,17 @@ export const Sidebar = ({
     setMessages(prev => [...prev, newMessage]);
   };
 
+  // 检测是否是任务型问题（需要生成引导步骤）
+  const isTaskQuery = (text: string): boolean => {
+    const taskKeywords = [
+      '如何', '怎样', '怎么', '步骤', '流程', '引导', '指导',
+      '成为', '积累', '获得', '实现', '完成', '做', '创建',
+      '粉丝', '网红', '大V', '专家', '版主', 'API', '构建', '开发'
+    ];
+    const lowerText = text.toLowerCase();
+    return taskKeywords.some(keyword => lowerText.includes(keyword));
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
     
@@ -142,26 +153,45 @@ export const Sidebar = ({
     };
     
     setMessages(prev => [...prev, userMessage]);
+    const userInput = input.trim();
     setInput("");
     setIsLoading(true);
     
     try {
       const knowledgeContext = documents.map(d => d.content).join('\n\n---\n\n');
       
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map(m => ({
-            role: m.role,
-            content: m.content
-          })),
-          knowledge: knowledgeContext,
-        }),
-      });
+      // 检测是否是任务型问题，如果是，同时调用规划API生成步骤
+      const isTask = isTaskQuery(userInput);
       
-      if (response.ok) {
-        const data = await response.json();
+      // 并行调用：AI对话 + 任务规划（如果是任务型问题）
+      const [chatResponse, planResponse] = await Promise.allSettled([
+        // AI对话
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [...messages, userMessage].map(m => ({
+              role: m.role,
+              content: m.content
+            })),
+            knowledge: knowledgeContext,
+          }),
+        }),
+        // 任务规划（如果是任务型问题）
+        isTask ? fetch('/api/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task: userInput,
+            currentDemo: currentDemo,
+            documents: documents,
+          }),
+        }) : Promise.resolve(null),
+      ]);
+      
+      // 处理AI对话回复
+      if (chatResponse.status === 'fulfilled' && chatResponse.value.ok) {
+        const data = await chatResponse.value.json();
         const assistantMessage: Message = {
           id: generateMessageId(),
           role: "assistant",
@@ -169,6 +199,26 @@ export const Sidebar = ({
           timestamp: new Date(),
         };
         setMessages(prev => [...prev, assistantMessage]);
+        
+        // 如果任务规划成功，添加引导步骤
+        if (isTask && planResponse.status === 'fulfilled' && planResponse.value) {
+          const planData = await planResponse.value.json();
+          if (planData.steps && planData.steps.length > 0) {
+            // 添加一个提示消息，引导用户使用智能引导功能
+            const guidanceMessage: Message = {
+              id: generateMessageId(),
+              role: "assistant",
+              content: `🎯 **已为你生成 ${planData.steps.length} 个引导步骤！**\n\n切换到「智能引导」标签页，选择软件后即可开始逐步引导。\n\n**生成的步骤预览：**\n${planData.steps.map((step: string, idx: number) => `${idx + 1}. ${step}`).join('\n')}`,
+              timestamp: new Date(),
+            };
+            setMessages(prev => [...prev, guidanceMessage]);
+            
+            // 自动切换到智能引导标签页
+            setTimeout(() => {
+              setActiveTab("guidance");
+            }, 1000);
+          }
+        }
       } else {
         addAssistantMessage("抱歉，遇到了一些问题。请稍后再试。");
       }
