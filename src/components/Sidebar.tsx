@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
 import { GuidanceFlow } from "./GuidanceFlow";
+import { ChatMessage } from "./ChatMessage";
 
 type DemoType = "ide" | "reddit" | "figma";
 type TabType = "guidance" | "chat";
@@ -449,12 +450,12 @@ export const Sidebar = ({
                         )}
                       </div>
                       <div className={cn(
-                        "max-w-[85%] p-3.5 rounded-[20px] text-[13px] leading-[1.6] shadow-sm",
+                        "max-w-[85%] rounded-[20px] shadow-sm",
                         msg.role === "user" 
-                          ? "bg-[#007AFF] text-white rounded-tr-sm" 
-                          : "bg-white text-[#1D1D1F] rounded-tl-sm border border-black/[0.03]"
+                          ? "bg-[#007AFF] text-white rounded-tr-sm p-3.5" 
+                          : "bg-white text-[#1D1D1F] rounded-tl-sm border border-black/[0.03] p-4"
                       )}>
-                        <div className="whitespace-pre-wrap font-medium">{msg.content}</div>
+                        <ChatMessage content={msg.content} role={msg.role} />
                       </div>
                     </motion.div>
                   ))
