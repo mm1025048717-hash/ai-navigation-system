@@ -19,6 +19,19 @@ export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basi
   const isDesignSystem = taskId === "design-system";
   const [selectedTool, setSelectedTool] = useState("frame");
   const [zoom, setZoom] = useState(100);
+  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
+  const [canvasElements, setCanvasElements] = useState([
+    { id: "card-1", type: "card", x: 64, y: 64, width: 256, height: 160, selected: false },
+    { id: "button-1", type: "button", x: 100, y: 200, width: 80, height: 32, selected: false },
+  ]);
+  const [layerProperties, setLayerProperties] = useState({
+    width: 256,
+    height: 160,
+    x: 64,
+    y: 64,
+    opacity: 100,
+    borderRadius: 12,
+  });
   
   // 根据步骤内容动态确定可点击元素
   const getStepTarget = (stepIndex: number) => {
@@ -313,20 +326,72 @@ export const DemoFigma = ({ currentStep, isActive, onStepClick, taskType = "basi
             <span className="text-[11px] font-bold text-white">Design</span>
           </div>
           <div className="flex-1 overflow-auto p-4 space-y-4">
-            <div>
-              <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Position</label>
-              <div className="flex gap-2">
-                <input className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C]" value="X: 120" readOnly />
-                <input className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C]" value="Y: 80" readOnly />
+            {selectedLayer && (
+              <>
+                <div>
+                  <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Position</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="number"
+                      value={layerProperties.x}
+                      onChange={(e) => setLayerProperties({ ...layerProperties, x: parseInt(e.target.value) || 0 })}
+                      className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C] focus:outline-none focus:border-[#0D99FF]"
+                    />
+                    <input 
+                      type="number"
+                      value={layerProperties.y}
+                      onChange={(e) => setLayerProperties({ ...layerProperties, y: parseInt(e.target.value) || 0 })}
+                      className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C] focus:outline-none focus:border-[#0D99FF]"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Size</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="number"
+                      value={layerProperties.width}
+                      onChange={(e) => setLayerProperties({ ...layerProperties, width: parseInt(e.target.value) || 0 })}
+                      className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C] focus:outline-none focus:border-[#0D99FF]"
+                    />
+                    <input 
+                      type="number"
+                      value={layerProperties.height}
+                      onChange={(e) => setLayerProperties({ ...layerProperties, height: parseInt(e.target.value) || 0 })}
+                      className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C] focus:outline-none focus:border-[#0D99FF]"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Border Radius</label>
+                  <input 
+                    type="number"
+                    value={layerProperties.borderRadius}
+                    onChange={(e) => setLayerProperties({ ...layerProperties, borderRadius: parseInt(e.target.value) || 0 })}
+                    className="w-full h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C] focus:outline-none focus:border-[#0D99FF]"
+                  />
+                </div>
+                <div>
+                  <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Opacity</label>
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={layerProperties.opacity}
+                      onChange={(e) => setLayerProperties({ ...layerProperties, opacity: parseInt(e.target.value) })}
+                      className="flex-1 h-1 bg-[#1E1E1E] rounded-lg appearance-none cursor-pointer"
+                    />
+                    <span className="text-white text-[11px] w-12 text-right">{layerProperties.opacity}%</span>
+                  </div>
+                </div>
+              </>
+            )}
+            {!selectedLayer && (
+              <div className="text-gray-500 text-[11px] text-center py-8">
+                选择一个图层以查看属性
               </div>
-            </div>
-            <div>
-              <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Size</label>
-              <div className="flex gap-2">
-                <input className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C]" value="W: 256" readOnly />
-                <input className="w-1/2 h-7 bg-[#1E1E1E] rounded px-2 text-white text-[11px] border border-[#3C3C3C]" value="H: 160" readOnly />
-              </div>
-            </div>
+            )}
             <div>
               <label className="text-gray-400 text-[10px] uppercase tracking-wider block mb-2">Fill</label>
               <div className="flex items-center gap-2">
