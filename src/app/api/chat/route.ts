@@ -23,15 +23,23 @@ export async function POST(request: NextRequest) {
       // 构建消息链
       const chain = prompt.pipe(model).pipe(stringParser);
       
+      // 转换消息格式为 LangChain 格式
+      const langchainMessages = messages.map((m: any) => {
+        if (m.role === 'user') {
+          return ['user', m.content];
+        } else if (m.role === 'assistant') {
+          return ['assistant', m.content];
+        } else {
+          return ['user', m.content];
+        }
+      });
+      
       // 调用链
       const response = await chain.invoke({
         knowledgeContext: knowledgeContext 
           ? `## 用户知识库内容\n${knowledgeContext}\n` 
           : '当前没有上传知识库文档。',
-        messages: messages.map((m: any) => ({
-          role: m.role,
-          content: m.content,
-        })),
+        messages: langchainMessages,
       });
       
       return NextResponse.json({
@@ -40,6 +48,13 @@ export async function POST(request: NextRequest) {
       });
     } catch (langchainError: any) {
       console.error('LangChain error:', langchainError);
+      
+      // 检查是否是 MODEL_NOT_FOUND 错误
+      if (langchainError.message?.includes('MODEL_NOT_FOUND') || 
+          langchainError.message?.includes('model_not_found') ||
+          langchainError.message?.includes('404')) {
+        console.warn('MODEL_NOT_FOUND error detected, falling back to direct API');
+      }
       
       // 如果 LangChain 失败，降级到直接 API 调用
       return fallbackToDirectAPI(messages, knowledgeContext, lastMessage);
