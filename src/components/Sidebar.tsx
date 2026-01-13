@@ -685,7 +685,7 @@ export const Sidebar = ({
 
       {/* 底部输入框 - 仅在 AI 对话模式下显示 */}
       {activeTab === "chat" && (
-        <footer className="p-6 border-t border-black/[0.03] bg-white relative">
+        <footer className="px-5 py-5 border-t border-black/[0.03] bg-white relative">
           {/* 隐藏的文件输入 */}
           <input
             ref={fileInputRef}
@@ -703,7 +703,7 @@ export const Sidebar = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute bottom-full left-6 right-6 mb-2 p-4 bg-white rounded-2xl border border-black/[0.05] shadow-xl space-y-3"
+                className="absolute bottom-full left-5 right-5 mb-2 p-4 bg-white rounded-2xl border border-black/[0.05] shadow-xl space-y-3"
               >
                 <div className="flex items-center gap-2">
                   <Upload className="w-4 h-4 text-[#007AFF]" />
@@ -720,10 +720,10 @@ export const Sidebar = ({
             )}
           </AnimatePresence>
 
-          <div className="relative flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full">
             <button
               onClick={() => setIsUploadMenuOpen(!isUploadMenuOpen)}
-              className="w-12 h-12 rounded-xl border border-black/[0.08] flex items-center justify-center hover:bg-[#F5F5F7] transition-colors shrink-0"
+              className="w-12 h-12 rounded-xl border border-black/[0.08] flex items-center justify-center hover:bg-[#F5F5F7] transition-colors shrink-0 flex-shrink-0"
             >
               {isUploading ? (
                 <Loader2 className="w-5 h-5 text-[#007AFF] animate-spin" />
@@ -737,12 +737,12 @@ export const Sidebar = ({
               onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
               placeholder={documents.length > 0 ? "向 AI 询问任何细节..." : "输入问题或上传知识库..."}
               disabled={isLoading}
-              className="flex-1 h-12 pl-5 pr-5 bg-[#F5F5F7] rounded-xl text-[14px] font-medium outline-none border border-transparent focus:border-[#007AFF]/30 focus:bg-white transition-all disabled:opacity-50 placeholder:text-[#86868B]"
+              className="flex-1 min-w-0 h-12 px-5 bg-[#F5F5F7] rounded-xl text-[14px] font-medium outline-none border border-transparent focus:border-[#007AFF]/30 focus:bg-white transition-all disabled:opacity-50 placeholder:text-[#86868B]"
             />
             <button 
               onClick={handleSend}
               disabled={isLoading || !input.trim()}
-              className="w-12 h-12 bg-[#007AFF] rounded-xl flex items-center justify-center hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30 shrink-0"
+              className="w-12 h-12 bg-[#007AFF] rounded-xl flex items-center justify-center hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30 shrink-0 flex-shrink-0"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 text-white animate-spin" />
@@ -751,7 +751,7 @@ export const Sidebar = ({
               )}
             </button>
           </div>
-          <div className="mt-4 flex items-center justify-center gap-6 text-[10px] font-bold text-[#86868B] uppercase tracking-[0.2em]">
+          <div className="mt-3 flex items-center justify-center gap-6 text-[10px] font-bold text-[#86868B] uppercase tracking-[0.2em]">
             <span className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-[#34C759]" /> 
               AI Active
