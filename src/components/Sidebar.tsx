@@ -720,7 +720,7 @@ export const Sidebar = ({
             )}
           </AnimatePresence>
 
-          <div className="relative flex items-center gap-2">
+          <div className="relative flex items-center gap-3">
             <button
               onClick={() => setIsUploadMenuOpen(!isUploadMenuOpen)}
               className="w-12 h-12 rounded-xl border border-black/[0.08] flex items-center justify-center hover:bg-[#F5F5F7] transition-colors shrink-0"
@@ -742,7 +742,7 @@ export const Sidebar = ({
             <button 
               onClick={handleSend}
               disabled={isLoading || !input.trim()}
-              className="w-12 h-12 bg-[#007AFF] rounded-xl flex items-center justify-center hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30"
+              className="w-12 h-12 bg-[#007AFF] rounded-xl flex items-center justify-center hover:bg-[#0063CE] active:scale-[0.95] transition-all disabled:opacity-30 shrink-0"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 text-white animate-spin" />
