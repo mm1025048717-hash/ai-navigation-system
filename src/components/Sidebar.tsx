@@ -21,7 +21,15 @@ import {
   MessagesSquare,
   Upload,
   FileText,
-  Trash2
+  Trash2,
+  Video,
+  Image,
+  Building2,
+  BarChart3,
+  CheckSquare,
+  Users,
+  Database,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
@@ -63,7 +71,7 @@ const CONSUMER_DEMOS: Record<ConsumerDemoType, { name: string; icon: any; color:
   figma: { name: "Figma", icon: Palette, color: "#A259FF", description: "UI设计" },
   premiere: { name: "Premiere Pro", icon: Video, color: "#EA77FF", description: "视频剪辑" },
   photoshop: { name: "Photoshop", icon: Image, color: "#31A8FF", description: "图像处理" },
-  notion: { name: "Notion", icon: NotionIcon, color: "#000000", description: "知识管理" },
+  notion: { name: "Notion", icon: FileText, color: "#000000", description: "知识管理" },
 };
 
 // B端软件信息
@@ -83,6 +91,7 @@ const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string; desc
 };
 
 const STEP_MESSAGES: Record<DemoType, Record<number, string>> = {
+  // C端软件
   ide: {
     0: "准备就绪，点击开始体验 IDE 操作引导",
     1: "请点击左侧高亮的 main.py 文件",
@@ -103,6 +112,70 @@ const STEP_MESSAGES: Record<DemoType, Record<number, string>> = {
     2: "点击画布中高亮的卡片组件",
     3: "点击底部高亮的组件",
     4: "点击右侧高亮的属性面板",
+  },
+  premiere: {
+    0: "准备就绪，点击开始体验视频剪辑引导",
+    1: "导入视频素材到项目",
+    2: "将素材拖拽到时间轴",
+    3: "应用转场效果",
+    4: "导出最终视频",
+  },
+  photoshop: {
+    0: "准备就绪，点击开始体验图像处理引导",
+    1: "打开图像文件",
+    2: "选择图层工具",
+    3: "应用滤镜效果",
+    4: "保存处理后的图像",
+  },
+  notion: {
+    0: "准备就绪，点击开始体验知识管理引导",
+    1: "创建新的页面",
+    2: "添加内容块",
+    3: "设置页面属性",
+    4: "分享页面",
+  },
+  // B端软件
+  salesforce: {
+    0: "准备就绪，点击开始体验 CRM 系统引导",
+    1: "打开客户管理模块",
+    2: "创建新的销售机会",
+    3: "关联客户信息",
+    4: "更新销售阶段",
+  },
+  tableau: {
+    0: "准备就绪，点击开始体验数据分析引导",
+    1: "连接数据源",
+    2: "创建可视化图表",
+    3: "设置数据筛选器",
+    4: "发布仪表板",
+  },
+  jira: {
+    0: "准备就绪，点击开始体验项目管理引导",
+    1: "创建新的任务",
+    2: "设置任务优先级",
+    3: "分配给团队成员",
+    4: "更新任务状态",
+  },
+  slack: {
+    0: "准备就绪，点击开始体验团队协作引导",
+    1: "创建新的频道",
+    2: "邀请团队成员",
+    3: "发送消息",
+    4: "设置频道通知",
+  },
+  sap: {
+    0: "准备就绪，点击开始体验 ERP 系统引导",
+    1: "登录系统",
+    2: "访问财务模块",
+    3: "创建会计凭证",
+    4: "审核并过账",
+  },
+  hubspot: {
+    0: "准备就绪，点击开始体验营销自动化引导",
+    1: "创建营销活动",
+    2: "设置目标受众",
+    3: "设计邮件模板",
+    4: "启动并监控活动",
   },
 };
 

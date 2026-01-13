@@ -73,6 +73,16 @@ export default function Home() {
         return <DemoReddit {...props} />;
       case "figma":
         return <DemoFigma {...props} />;
+      // 其他软件暂时使用占位组件
+      default:
+        return (
+          <div className="h-full flex items-center justify-center bg-[#F5F5F7] rounded-2xl">
+            <div className="text-center">
+              <p className="text-[#86868B] text-sm font-medium mb-2">{currentDemo} 演示</p>
+              <p className="text-[#86868B] text-xs">演示界面开发中...</p>
+            </div>
+          </div>
+        );
     }
   };
 
