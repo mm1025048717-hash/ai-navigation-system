@@ -271,6 +271,14 @@ export const GuidanceFlow = ({
                     {documents.length} 个文档已就绪
                   </span>
                 </div>
+                <div className="space-y-2">
+                  {documents.slice(0, 3).map((doc) => (
+                    <div key={doc.id} className="flex items-center gap-2 px-3 py-2 bg-[#F5F5F7] rounded-lg">
+                      <FileText className="w-4 h-4 text-[#007AFF]" />
+                      <span className="text-[11px] font-medium text-[#1D1D1F] truncate">{doc.name}</span>
+                    </div>
+                  ))}
+                </div>
                 <button
                   onClick={() => setCurrentStep(1)}
                   className="w-full h-11 bg-[#007AFF] text-white rounded-xl text-[13px] font-bold flex items-center justify-center gap-2 hover:bg-[#0063CE] active:scale-[0.98] transition-all"
@@ -282,8 +290,16 @@ export const GuidanceFlow = ({
             ) : (
               <div className="py-8 text-center">
                 <Upload className="w-8 h-8 text-[#86868B] mx-auto mb-3" />
-                <p className="text-[12px] text-[#86868B] font-medium">
-                  请在 <span className="text-[#007AFF] font-bold">AI 对话</span> 中上传知识库
+                <p className="text-[12px] text-[#86868B] font-medium mb-2">
+                  请在 <span className="text-[#007AFF] font-bold cursor-pointer hover:underline" onClick={() => {
+                    // 触发切换到AI对话标签（需要从父组件传递）
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new CustomEvent('switch-to-chat'));
+                    }
+                  }}>AI 对话</span> 中上传知识库
+                </p>
+                <p className="text-[10px] text-[#86868B]">
+                  支持 .txt、.md 格式文件
                 </p>
               </div>
             )}
