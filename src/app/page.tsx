@@ -28,7 +28,8 @@ type DemoType =
   | "jira" 
   | "slack" 
   | "sap" 
-  | "hubspot";
+  | "hubspot"
+  | "custom";
 
 type TaskType = "basic" | "advanced";
 

@@ -41,7 +41,7 @@ type ConsumerDemoType = "ide" | "reddit" | "figma" | "premiere" | "photoshop" | 
 // B端软件
 type BusinessDemoType = "salesforce" | "tableau" | "jira" | "slack" | "sap" | "hubspot";
 // 所有软件类型
-type DemoType = ConsumerDemoType | BusinessDemoType;
+type DemoType = ConsumerDemoType | BusinessDemoType | "custom";
 type TabType = "guidance" | "chat";
 
 interface Message {
