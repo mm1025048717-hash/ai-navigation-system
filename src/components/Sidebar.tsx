@@ -178,6 +178,14 @@ const STEP_MESSAGES: Record<DemoType, Record<number, string>> = {
     3: "设计邮件模板",
     4: "启动并监控活动",
   },
+  custom: {
+    0: "准备就绪，开始自定义软件引导",
+    1: "打开自定义软件",
+    2: "执行第一步操作",
+    3: "执行第二步操作",
+    4: "执行第三步操作",
+    5: "完成任务",
+  },
 };
 
 export const Sidebar = ({ 
