@@ -565,22 +565,21 @@ export const GuidanceFlow = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-3"
+            className="space-y-1"
           >
-            {/* 所有软件统一列表 - 极简设计 */}
+            {/* C端软件 - 极简设计 */}
             <div className="space-y-1">
-              {/* C端和B端软件合并显示 */}
-              {[
-                ...(Object.keys(CONSUMER_DEMOS) as ConsumerDemoType[]).map(demo => ({ type: 'consumer' as const, demo })),
-                ...(Object.keys(BUSINESS_DEMOS) as BusinessDemoType[]).map(demo => ({ type: 'business' as const, demo })),
-              ].map(({ type, demo }) => {
-                const info = type === 'consumer' ? CONSUMER_DEMOS[demo as ConsumerDemoType] : BUSINESS_DEMOS[demo as BusinessDemoType];
+              <div className="px-4 py-2">
+                <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">C端软件</span>
+              </div>
+              {(Object.keys(CONSUMER_DEMOS) as ConsumerDemoType[]).map((demo) => {
+                const info = CONSUMER_DEMOS[demo];
                 const Icon = info.icon;
                 return (
                   <button
                     key={demo}
                     onClick={() => {
-                      onDemoSelect(demo as DemoType);
+                      onDemoSelect(demo);
                       setSelectedTask(null);
                       setTaskType("basic");
                     }}
@@ -607,8 +606,51 @@ export const GuidanceFlow = ({
                   </button>
                 );
               })}
+            </div>
 
-              {/* 自定义软件 */}
+            {/* B端软件 - 极简设计 */}
+            <div className="space-y-1 pt-2">
+              <div className="px-4 py-2">
+                <span className="text-[11px] font-semibold text-[#86868B] uppercase tracking-wider">B端软件</span>
+              </div>
+              {(Object.keys(BUSINESS_DEMOS) as BusinessDemoType[]).map((demo) => {
+                const info = BUSINESS_DEMOS[demo];
+                const Icon = info.icon;
+                return (
+                  <button
+                    key={demo}
+                    onClick={() => {
+                      onDemoSelect(demo);
+                      setSelectedTask(null);
+                      setTaskType("basic");
+                    }}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left",
+                      currentDemo === demo
+                        ? "bg-[#007AFF] text-white"
+                        : "bg-white hover:bg-[#F5F5F7] text-[#1D1D1F]"
+                    )}
+                  >
+                    <Icon className={cn(
+                      "w-5 h-5 shrink-0",
+                      currentDemo === demo ? "text-white" : "text-[#86868B]"
+                    )} />
+                    <span className={cn(
+                      "text-[13px] font-semibold flex-1",
+                      currentDemo === demo ? "text-white" : "text-[#1D1D1F]"
+                    )}>
+                      {info.name}
+                    </span>
+                    {currentDemo === demo && (
+                      <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 自定义软件 - 极简设计 */}
+            <div className="space-y-1 pt-2">
               <button
                 onClick={() => setShowCustomDialog(true)}
                 className={cn(
