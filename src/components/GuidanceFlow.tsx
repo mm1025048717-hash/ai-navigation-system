@@ -634,20 +634,19 @@ export const GuidanceFlow = ({
               </button>
             </div>
 
-            {/* 任务类型选择 */}
-            <div className="space-y-3">
-              <p className="text-[12px] font-bold text-[#86868B] uppercase tracking-wider">选择任务类型</p>
-              <div className="flex gap-2">
+            {/* 任务类型选择 - 极简设计 */}
+            <div className="pt-4 border-t border-[#E8E8ED]">
+              <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => {
                     setTaskType("basic");
                     setSelectedTask(null);
                   }}
                   className={cn(
-                    "flex-1 h-10 rounded-xl text-[12px] font-bold transition-all",
+                    "flex-1 h-10 rounded-xl text-[13px] font-semibold transition-all",
                     taskType === "basic"
                       ? "bg-[#007AFF] text-white"
-                      : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                      : "bg-white text-[#1D1D1F] hover:bg-[#F5F5F7]"
                   )}
                 >
                   基础任务
@@ -658,29 +657,29 @@ export const GuidanceFlow = ({
                     setSelectedTask(null);
                   }}
                   className={cn(
-                    "flex-1 h-10 rounded-xl text-[12px] font-bold transition-all",
+                    "flex-1 h-10 rounded-xl text-[13px] font-semibold transition-all",
                     taskType === "advanced"
                       ? "bg-[#007AFF] text-white"
-                      : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                      : "bg-white text-[#1D1D1F] hover:bg-[#F5F5F7]"
                   )}
                 >
                   复杂任务
                 </button>
               </div>
 
-              {/* 任务选择 */}
+              {/* 任务选择 - 极简设计 */}
               {taskType === "basic" ? (
                 <button
                   onClick={() => {
                     setGeneratedSteps(BASIC_TASKS[currentDemo] || []);
                     setCurrentStep(2);
                   }}
-                  className="w-full h-12 bg-[#007AFF] text-white rounded-xl text-[13px] font-bold hover:bg-[#0063CE] transition-all"
+                  className="w-full h-11 bg-[#007AFF] text-white rounded-xl text-[13px] font-semibold hover:bg-[#0063CE] transition-all active:scale-[0.98]"
                 >
                   使用基础任务
                 </button>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {(ADVANCED_TASKS[currentDemo] || []).map((task) => (
                     <button
                       key={task.id}
@@ -690,13 +689,18 @@ export const GuidanceFlow = ({
                         setCurrentStep(2);
                       }}
                       className={cn(
-                        "w-full p-4 rounded-xl border text-left transition-all",
+                        "w-full p-3.5 rounded-xl text-left transition-all",
                         selectedTask?.id === task.id
-                          ? "bg-[#007AFF] text-white border-[#007AFF]"
-                          : "bg-white border-black/[0.05] hover:border-[#007AFF]/30"
+                          ? "bg-[#007AFF] text-white"
+                          : "bg-white hover:bg-[#F5F5F7] text-[#1D1D1F]"
                       )}
                     >
-                      <div className="font-bold text-[13px] mb-1">{task.title}</div>
+                      <div className={cn(
+                        "font-semibold text-[13px] mb-0.5",
+                        selectedTask?.id === task.id ? "text-white" : "text-[#1D1D1F]"
+                      )}>
+                        {task.title}
+                      </div>
                       <div className={cn(
                         "text-[11px]",
                         selectedTask?.id === task.id ? "text-white/80" : "text-[#86868B]"
