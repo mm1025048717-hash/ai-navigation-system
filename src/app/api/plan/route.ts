@@ -166,6 +166,8 @@ async function fallbackToDirectAPI(task: string, contextText: string) {
 
 只返回JSON，不要其他文字。`;
 
+  // 根据 DeepSeek 官方文档：https://api-docs.deepseek.com/zh-cn/
+  // API 端点：https://api.deepseek.com/chat/completions
   const apiUrl = process.env.DEEPSEEK_API_KEY 
     ? "https://api.deepseek.com/chat/completions"
     : "https://api.openai.com/v1/chat/completions";

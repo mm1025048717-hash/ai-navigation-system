@@ -16,11 +16,15 @@ export function getChatModel() {
   }
 
   // DeepSeek 使用 OpenAI 兼容接口
+  // 根据官方文档：https://api-docs.deepseek.com/zh-cn/
+  // base_url 可以是 https://api.deepseek.com 或 https://api.deepseek.com/v1
   const baseURL = process.env.DEEPSEEK_API_KEY
-    ? "https://api.deepseek.com"
+    ? "https://api.deepseek.com"  // 官方推荐使用不带 /v1 的版本
     : undefined;
 
   // 模型名称 - 确保使用正确的模型标识符
+  // deepseek-chat: DeepSeek-V3.2 非思考模式
+  // deepseek-reasoner: DeepSeek-V3.2 思考模式
   const modelName = process.env.DEEPSEEK_API_KEY
     ? "deepseek-chat"  // DeepSeek 的模型名称
     : "gpt-4o-mini";   // OpenAI 的模型名称
@@ -34,10 +38,12 @@ export function getChatModel() {
   };
 
   // 如果使用 DeepSeek，需要设置 baseURL
-  // 注意：DeepSeek API 的完整路径是 https://api.deepseek.com/v1
+  // 根据官方文档：https://api-docs.deepseek.com/zh-cn/
+  // base_url 可以是 https://api.deepseek.com 或 https://api.deepseek.com/v1
+  // 为了兼容 LangChain，我们使用 https://api.deepseek.com/v1
   if (baseURL) {
     config.configuration = {
-      baseURL: `${baseURL}/v1`,
+      baseURL: `${baseURL}/v1`,  // LangChain 需要完整的 /v1 路径
     };
   }
 

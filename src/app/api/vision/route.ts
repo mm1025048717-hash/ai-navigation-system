@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 使用 DeepSeek Vision API（如果可用）或 OpenAI Vision API
+    // 根据 DeepSeek 官方文档：https://api-docs.deepseek.com/zh-cn/
     const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
     const apiUrl = process.env.DEEPSEEK_API_KEY 
       ? "https://api.deepseek.com/chat/completions"

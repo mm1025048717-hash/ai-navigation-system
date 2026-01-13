@@ -106,6 +106,8 @@ ${knowledge ? `## 用户知识库内容\n${knowledge}\n` : ''}
 - 突出关键操作和注意事项
 - 适当使用 emoji 增强可读性`;
 
+  // 根据 DeepSeek 官方文档：https://api-docs.deepseek.com/zh-cn/
+  // API 端点：https://api.deepseek.com/chat/completions
   const apiUrl = process.env.DEEPSEEK_API_KEY 
     ? 'https://api.deepseek.com/chat/completions'
     : 'https://api.openai.com/v1/chat/completions';
