@@ -29,7 +29,9 @@ import {
   CheckSquare,
   Users,
   Database,
-  Target
+  Target,
+  ArrowLeft,
+  SkipForward
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
