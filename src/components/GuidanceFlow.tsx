@@ -644,6 +644,9 @@ export const GuidanceFlow = ({
                     )}>
                       {info.name}
                     </span>
+                    {isFocusedSoftware(demo) && (
+                      <Star className="w-3.5 h-3.5 text-[#FFD700] shrink-0 fill-[#FFD700]" />
+                    )}
                     {currentDemo === demo && (
                       <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
                     )}
@@ -685,6 +688,9 @@ export const GuidanceFlow = ({
                     )}>
                       {info.name}
                     </span>
+                    {isFocusedSoftware(demo) && (
+                      <Star className="w-3.5 h-3.5 text-[#FFD700] shrink-0 fill-[#FFD700]" />
+                    )}
                     {currentDemo === demo && (
                       <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
                     )}
