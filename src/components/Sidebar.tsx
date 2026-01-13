@@ -88,6 +88,7 @@ const BUSINESS_DEMOS: Record<BusinessDemoType, { name: string; icon: any; color:
 const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string; description: string }> = {
   ...CONSUMER_DEMOS,
   ...BUSINESS_DEMOS,
+  custom: { name: "自定义软件", icon: Target, color: "#34C759", description: "自定义应用" },
 };
 
 const STEP_MESSAGES: Record<DemoType, Record<number, string>> = {
