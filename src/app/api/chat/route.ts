@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getChatModel, createKnowledgePrompt, stringParser } from '@/lib/langchain-config';
 
 // 知识库上下文存储（在实际生产中应使用数据库）
 let knowledgeContext: string = '';
@@ -14,8 +15,64 @@ export async function POST(request: NextRequest) {
     
     const lastMessage = messages[messages.length - 1]?.content || '';
     
-    // 构建系统提示
-    const systemPrompt = `你是 AI Navigator 智能助手，专门帮助用户学习和操作软件。
+    try {
+      // 使用 LangChain
+      const model = getChatModel();
+      const prompt = createKnowledgePrompt();
+      
+      // 构建消息链
+      const chain = prompt.pipe(model).pipe(stringParser);
+      
+      // 调用链
+      const response = await chain.invoke({
+        knowledgeContext: knowledgeContext 
+          ? `## 用户知识库内容\n${knowledgeContext}\n` 
+          : '当前没有上传知识库文档。',
+        messages: messages.map((m: any) => ({
+          role: m.role,
+          content: m.content,
+        })),
+      });
+      
+      return NextResponse.json({
+        role: 'assistant',
+        content: response,
+      });
+    } catch (langchainError: any) {
+      console.error('LangChain error:', langchainError);
+      
+      // 如果 LangChain 失败，降级到直接 API 调用
+      return fallbackToDirectAPI(messages, knowledgeContext, lastMessage);
+    }
+    
+  } catch (error: any) {
+    console.error('Chat API error:', error);
+    
+    // 最终降级方案
+    const simulatedResponse = generateSmartResponse(
+      messages[messages.length - 1]?.content || '',
+      knowledgeContext
+    );
+    
+    return NextResponse.json({
+      role: 'assistant',
+      content: simulatedResponse,
+    });
+  }
+}
+
+// 降级方案：直接 API 调用
+async function fallbackToDirectAPI(messages: any[], knowledge: string, lastMessage: string) {
+  const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
+  
+  if (!apiKey) {
+    return NextResponse.json({
+      role: 'assistant',
+      content: generateSmartResponse(lastMessage, knowledge),
+    });
+  }
+  
+  const systemPrompt = `你是 AI Navigator 智能助手，专门帮助用户学习和操作软件。
 
 你的核心能力：
 1. 基于用户上传的知识库文档，提供精准的操作指导
@@ -23,7 +80,7 @@ export async function POST(request: NextRequest) {
 3. 实时回答用户的问题，提供视觉引导建议
 4. 当用户遇到错误时，提供修正方案
 
-${knowledgeContext ? `## 用户知识库内容\n${knowledgeContext}\n` : ''}
+${knowledge ? `## 用户知识库内容\n${knowledge}\n` : ''}
 
 请基于以上知识库内容（如果有的话）回答用户问题。如果问题超出知识库范围，请诚实说明并提供通用建议。
 
@@ -33,57 +90,37 @@ ${knowledgeContext ? `## 用户知识库内容\n${knowledgeContext}\n` : ''}
 - 突出关键操作和注意事项
 - 适当使用 emoji 增强可读性`;
 
-    // 使用 DeepSeek API（兼容 OpenAI 格式）
-    // 文档: https://api-docs.deepseek.com/zh-cn/
-    const apiKey = process.env.DEEPSEEK_API_KEY;
-    
-    if (apiKey) {
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat', // DeepSeek-V3.2 非思考模式
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messages.map((m: any) => ({ role: m.role, content: m.content }))
-          ],
-          temperature: 0.7,
-          max_tokens: 2000,
-          stream: false,
-        }),
-      });
+  const apiUrl = process.env.DEEPSEEK_API_KEY 
+    ? 'https://api.deepseek.com/chat/completions'
+    : 'https://api.openai.com/v1/chat/completions';
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('DeepSeek API error:', errorText);
-        throw new Error('DeepSeek API error');
-      }
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: process.env.DEEPSEEK_API_KEY ? 'deepseek-chat' : 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages.map((m: any) => ({ role: m.role, content: m.content })),
+      ],
+      temperature: 0.7,
+      max_tokens: 2000,
+      stream: false,
+    }),
+  });
 
-      const data = await response.json();
-      return NextResponse.json({
-        role: 'assistant',
-        content: data.choices[0].message.content,
-      });
-    }
-    
-    // 如果没有 API 密钥，使用智能模拟回复
-    const simulatedResponse = generateSmartResponse(lastMessage, knowledgeContext);
-    
-    return NextResponse.json({
-      role: 'assistant',
-      content: simulatedResponse,
-    });
-    
-  } catch (error) {
-    console.error('Chat API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+  if (!response.ok) {
+    throw new Error('API call failed');
   }
+
+  const data = await response.json();
+  return NextResponse.json({
+    role: 'assistant',
+    content: data.choices[0].message.content,
+  });
 }
 
 // 智能模拟回复（当没有 API 密钥时）
