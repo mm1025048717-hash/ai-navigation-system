@@ -51,11 +51,19 @@ export async function POST(request: NextRequest) {
     
     storeDocument(document);
     
-    // 返回解析后的文档信息
+    // 返回解析后的文档信息（兼容UploadedDoc接口）
     return NextResponse.json({
-      ...document,
-      steps: steps.slice(0, 10), // 返回前10个步骤作为预览
-      uiElements: uiElements.slice(0, 10), // 返回前10个UI元素作为预览
+      id: document.id,
+      name: document.name,
+      content: document.content,
+      type: document.type,
+      size: document.size,
+      uploadedAt: document.uploadedAt,
+      preview: document.preview,
+      // 额外信息
+      chunksCount: chunks.length,
+      stepsCount: steps.length,
+      uiElementsCount: uiElements.length,
     });
     
   } catch (error) {

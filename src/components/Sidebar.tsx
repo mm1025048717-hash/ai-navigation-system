@@ -175,8 +175,15 @@ export const Sidebar = ({
   };
 
   const handleDocumentAdd = (doc: UploadedDoc) => {
-    setDocuments(prev => [...prev, doc]);
-    addAssistantMessage(`✅ 已成功加载文档「${doc.name}」！现在你可以基于这个文档向我提问。`);
+    // 检查是否已存在
+    const exists = documents.some(d => d.id === doc.id);
+    if (exists) {
+      addAssistantMessage(`⚠️ 文档「${doc.name}」已存在，已更新`);
+      setDocuments(prev => prev.map(d => d.id === doc.id ? doc : d));
+    } else {
+      setDocuments(prev => [...prev, doc]);
+      addAssistantMessage(`✅ 已成功加载文档「${doc.name}」！现在你可以基于这个文档向我提问。`);
+    }
   };
 
   const handleDocumentRemove = (id: string) => {
@@ -186,32 +193,47 @@ export const Sidebar = ({
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     
-    for (const file of Array.from(files)) {
-      if (!file.type.includes('text') && !file.name.endsWith('.md') && !file.name.endsWith('.txt') && !file.name.endsWith('.html')) {
-        continue;
-      }
-      
-      setIsUploading(true);
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
+    setIsUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        // 检查文件类型
+        const isValidFile = file.type.includes('text') || 
+                           file.name.endsWith('.md') || 
+                           file.name.endsWith('.txt') || 
+                           file.name.endsWith('.html') ||
+                           file.name.endsWith('.markdown');
         
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
-        
-        if (response.ok) {
-          const doc = await response.json();
-          handleDocumentAdd(doc);
+        if (!isValidFile) {
+          addAssistantMessage(`⚠️ 文件「${file.name}」格式不支持，请上传 .txt 或 .md 文件`);
+          continue;
         }
-      } catch (error) {
-        console.error('Upload failed:', error);
-      } finally {
-        setIsUploading(false);
+        
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          if (response.ok) {
+            const doc = await response.json();
+            handleDocumentAdd(doc);
+            addAssistantMessage(`✅ 已成功上传并解析文档「${doc.name}」！${doc.chunksCount ? `共 ${doc.chunksCount} 个知识块` : ''}`);
+          } else {
+            const error = await response.json();
+            addAssistantMessage(`❌ 上传失败：${error.error || '未知错误'}`);
+          }
+        } catch (error: any) {
+          console.error('Upload failed:', error);
+          addAssistantMessage(`❌ 上传「${file.name}」时出错：${error.message || '网络错误'}`);
+        }
       }
+    } finally {
+      setIsUploading(false);
+      setIsUploadMenuOpen(false);
     }
-    setIsUploadMenuOpen(false);
   };
 
   const demoInfo = DEMO_INFO[currentDemo];
