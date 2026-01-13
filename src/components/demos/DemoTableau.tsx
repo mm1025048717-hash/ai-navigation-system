@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart3, Database, Filter, Download, Settings, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { BarChart3, Database, Filter, Download, Settings, TrendingUp, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoTableauProps {
@@ -23,6 +24,17 @@ export const DemoTableau = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoTableauProps) => {
+  const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  const [chartType, setChartType] = useState<"bar" | "line" | "pie" | "table">("bar");
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [dataSource, setDataSource] = useState<"connected" | "disconnected">("disconnected");
+  const [chartData, setChartData] = useState([
+    { category: "Q1", value: 120 },
+    { category: "Q2", value: 150 },
+    { category: "Q3", value: 180 },
+    { category: "Q4", value: 200 },
+  ]);
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];

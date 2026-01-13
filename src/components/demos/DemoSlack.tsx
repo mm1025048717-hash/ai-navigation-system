@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Hash, Plus, Search, Bell, AtSign, Paperclip, Smile } from "lucide-react";
+import { useState } from "react";
+import { Hash, Plus, Search, Bell, AtSign, Paperclip, Smile, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoSlackProps {
@@ -23,6 +24,20 @@ export const DemoSlack = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoSlackProps) => {
+  const [activeChannel, setActiveChannel] = useState("general");
+  const [messages, setMessages] = useState([
+    { id: 1, user: "Alice", text: "大家好！今天有什么新进展吗？", time: "10:30", thread: false },
+    { id: 2, user: "Bob", text: "我刚完成了登录页面的设计", time: "10:32", thread: false },
+    { id: 3, user: "Charlie", text: "太好了！可以分享一下吗？", time: "10:35", thread: true, threadId: 2 },
+  ]);
+  const [newMessage, setNewMessage] = useState("");
+  const [showThread, setShowThread] = useState<number | null>(null);
+  const [channels, setChannels] = useState([
+    { id: "general", name: "general", unread: 0 },
+    { id: "random", name: "random", unread: 2 },
+    { id: "dev-team", name: "dev-team", unread: 0 },
+  ]);
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];

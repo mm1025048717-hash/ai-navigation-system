@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Building2, Target, Mail, BarChart3, Users, Settings, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Building2, Target, Mail, BarChart3, Users, Settings, TrendingUp, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoHubSpotProps {
@@ -23,6 +24,20 @@ export const DemoHubSpot = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoHubSpotProps) => {
+  const [contacts, setContacts] = useState([
+    { id: 1, name: "John Doe", email: "john@example.com", company: "Acme Corp", status: "客户", value: "$50,000" },
+    { id: 2, name: "Jane Smith", email: "jane@example.com", company: "TechStart", status: "潜在客户", value: "$30,000" },
+    { id: 3, name: "Bob Johnson", email: "bob@example.com", company: "Global Inc", status: "线索", value: "$0" },
+  ]);
+  const [campaigns, setCampaigns] = useState([
+    { id: 1, name: "春季促销", status: "进行中", opens: 1200, clicks: 340, conversions: 45 },
+    { id: 2, name: "产品发布", status: "已完成", opens: 2500, clicks: 680, conversions: 120 },
+  ]);
+  const [selectedContact, setSelectedContact] = useState<number | null>(null);
+  const [showCreateCampaign, setShowCreateCampaign] = useState(false);
+  const [newCampaign, setNewCampaign] = useState({ name: "", type: "email" });
+  const [viewMode, setViewMode] = useState<"contacts" | "campaigns" | "analytics">("contacts");
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];

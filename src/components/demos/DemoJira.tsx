@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckSquare, Plus, Filter, Search, Settings, BarChart3, User } from "lucide-react";
+import { useState } from "react";
+import { CheckSquare, Plus, Filter, Search, Settings, BarChart3, User, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DemoJiraProps {
@@ -23,6 +24,17 @@ export const DemoJira = ({
   generatedSteps = [],
   totalSteps = 5,
 }: DemoJiraProps) => {
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "设计登录页面", status: "待办", assignee: "张三", priority: "高" },
+    { id: 2, title: "实现用户认证", status: "进行中", assignee: "李四", priority: "中" },
+    { id: 3, title: "编写API文档", status: "待办", assignee: null, priority: "低" },
+    { id: 4, title: "代码审查", status: "已完成", assignee: "王五", priority: "中" },
+  ]);
+  const [selectedTask, setSelectedTask] = useState<number | null>(null);
+  const [showCreateTask, setShowCreateTask] = useState(false);
+  const [newTask, setNewTask] = useState({ title: "", assignee: "", priority: "中" });
+  const [boardView, setBoardView] = useState<"board" | "list">("board");
+  
   const getStepTarget = (step: number): string | null => {
     if (generatedSteps.length > 0 && step <= generatedSteps.length && step > 0) {
       const stepContent = generatedSteps[step - 1];
