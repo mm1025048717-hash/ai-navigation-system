@@ -27,6 +27,9 @@ export async function POST(request: NextRequest) {
     let steps: string[] = [];
     let estimatedTime = "5";
     let difficulty = "中等";
+    let requiresApproval = false;
+    let hasErrorHandling = false;
+    let subTasks: any[] = [];
 
     try {
       // 2. 使用 LangChain 生成引导步骤
@@ -50,6 +53,23 @@ export async function POST(request: NextRequest) {
           steps = result.steps || [];
           estimatedTime = result.estimatedTime || "5";
           difficulty = result.difficulty || "中等";
+          requiresApproval = result.requiresApproval || false;
+          hasErrorHandling = result.hasErrorHandling || false;
+          subTasks = result.subTasks || [];
+          
+          // 如果有子任务，将子任务的步骤也合并到主步骤中
+          if (subTasks.length > 0) {
+            const allSubSteps: string[] = [];
+            subTasks.forEach((subTask: any) => {
+              allSubSteps.push(`【${subTask.name}】`);
+              if (subTask.steps && Array.isArray(subTask.steps)) {
+                allSubSteps.push(...subTask.steps);
+              }
+            });
+            if (allSubSteps.length > 0) {
+              steps = [...steps, ...allSubSteps];
+            }
+          }
         } else {
           // 如果找不到 JSON，尝试从文本中提取步骤
           steps = extractStepsFromText(response);
@@ -74,6 +94,9 @@ export async function POST(request: NextRequest) {
         steps = fallbackResult.steps;
         estimatedTime = fallbackResult.estimatedTime;
         difficulty = fallbackResult.difficulty;
+        requiresApproval = fallbackResult.requiresApproval || false;
+        hasErrorHandling = fallbackResult.hasErrorHandling || false;
+        subTasks = fallbackResult.subTasks || [];
       }
     }
 
@@ -104,6 +127,9 @@ export async function POST(request: NextRequest) {
       steps,
       estimatedTime,
       difficulty,
+      requiresApproval,
+      hasErrorHandling,
+      subTasks,
       relevantChunksCount: relevantChunks.length,
       timestamp: new Date().toISOString(),
     });
@@ -149,19 +175,51 @@ async function fallbackToDirectAPI(task: string, contextText: string) {
   const apiKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
   if (!apiKey) return null;
 
-  const systemPrompt = `你是一个专业的软件操作引导助手。基于用户提供的知识库文档，将任务拆解为清晰的操作步骤。
+  const systemPrompt = `你是一个专业的软件操作引导助手。基于用户提供的知识库文档，将复杂任务拆解为详细、可执行的操作步骤。
 
-要求：
-1. 步骤要具体、可操作
-2. 每个步骤应该明确指出要点击/操作哪个UI元素
-3. 步骤数量根据任务复杂度决定（简单任务3-5步，复杂任务6-10步）
-4. 使用简洁的中文描述
+**核心要求：**
+1. **详细程度**：每个步骤必须明确指出：
+   - 具体要操作的UI元素（按钮名称、菜单路径、输入框位置等）
+   - 操作方式（点击、输入、选择、拖拽等）
+   - 预期结果或验证方法
+   
+2. **步骤数量**：
+   - 简单任务：5-8步
+   - 中等任务：8-12步
+   - 复杂任务：12-20步
+   - 企业级复杂流程：20-30步
+   
+3. **复杂场景处理**：
+   - 包含条件分支说明（如果出现X情况，则执行Y）
+   - 包含错误处理步骤（如果操作失败，如何回退或修正）
+   - 包含数据验证步骤（如何确认操作成功）
+   - 包含多系统集成步骤（需要跨软件操作时）
+   
+4. **企业级流程**：
+   - 支持多角色协作流程
+   - 支持审批和审核环节
+   - 支持数据同步和备份
+   - 支持合规性检查
+
+5. **步骤描述格式**：
+   - 使用动作词开头（点击、输入、选择、打开、配置等）
+   - 明确指出UI元素位置（顶部菜单、左侧面板、右侧属性等）
+   - 包含参数说明（输入什么值、选择什么选项）
+   - 包含验证方法（如何确认操作成功）
 
 返回JSON格式：
 {
-  "steps": ["步骤1", "步骤2", ...],
+  "steps": ["详细步骤1", "详细步骤2", ...],
   "estimatedTime": "预计完成时间（分钟）",
-  "difficulty": "简单|中等|复杂"
+  "difficulty": "简单|中等|复杂|企业级",
+  "requiresApproval": true/false,
+  "hasErrorHandling": true/false,
+  "subTasks": [
+    {
+      "name": "子任务名称",
+      "steps": ["子步骤1", "子步骤2"]
+    }
+  ]
 }
 
 只返回JSON，不要其他文字。`;
