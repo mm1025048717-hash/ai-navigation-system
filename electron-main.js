@@ -1,5 +1,6 @@
-const { app, BrowserWindow, screen, ipcMain, desktopCapturer } = require('electron');
+const { app, BrowserWindow, screen, ipcMain, desktopCapturer, shell } = require('electron');
 const path = require('path');
+const { exec } = require('child_process');
 const isDev = require('electron-is-dev');
 
 let mainWindow;
@@ -72,6 +73,45 @@ ipcMain.handle('get-screen-size', async () => {
   } catch (err) {
     console.error('Get screen size failed:', err);
     return { width: 1920, height: 1080 };
+  }
+});
+
+// 启动外部应用
+ipcMain.on('launch-app', (event, appPath) => {
+  try {
+    if (process.platform === 'win32') {
+      // Windows: 使用 start 命令
+      exec(`start "" "${appPath}"`, (error) => {
+        if (error) {
+          console.error('Failed to launch app:', error);
+        }
+      });
+    } else if (process.platform === 'darwin') {
+      // macOS: 使用 open 命令
+      exec(`open "${appPath}"`, (error) => {
+        if (error) {
+          console.error('Failed to launch app:', error);
+        }
+      });
+    } else {
+      // Linux: 直接执行
+      exec(appPath, (error) => {
+        if (error) {
+          console.error('Failed to launch app:', error);
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Launch app error:', err);
+  }
+});
+
+// 打开URL
+ipcMain.on('open-url', (event, url) => {
+  try {
+    shell.openExternal(url);
+  } catch (err) {
+    console.error('Open URL error:', err);
   }
 });
 

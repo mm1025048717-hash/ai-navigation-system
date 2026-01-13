@@ -21,7 +21,8 @@ import {
   CheckSquare,
   Users,
   Database,
-  Target
+  Target,
+  Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
@@ -31,8 +32,16 @@ type ConsumerDemoType = "ide" | "reddit" | "figma" | "premiere" | "photoshop" | 
 // B端软件
 type BusinessDemoType = "salesforce" | "tableau" | "jira" | "slack" | "sap" | "hubspot";
 // 所有软件类型
-type DemoType = ConsumerDemoType | BusinessDemoType;
+type DemoType = ConsumerDemoType | BusinessDemoType | "custom";
 type TaskType = "basic" | "advanced";
+
+interface CustomSoftware {
+  id: string;
+  name: string;
+  path?: string;
+  processName?: string;
+  url?: string;
+}
 
 interface Task {
   id: string;
@@ -398,6 +407,14 @@ export const GuidanceFlow = ({
   const [taskType, setTaskType] = useState<TaskType>("basic");
   const [generatedSteps, setGeneratedSteps] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showCustomDialog, setShowCustomDialog] = useState(false);
+  const [customSoftware, setCustomSoftware] = useState<CustomSoftware>({
+    id: '',
+    name: '',
+    path: '',
+    processName: '',
+    url: ''
+  });
 
   // 自动触发生成逻辑 - 使用真实API
   useEffect(() => {
@@ -798,6 +815,127 @@ export const GuidanceFlow = ({
               <PlayCircle className="w-5 h-5" />
               开始智能引导
             </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 自定义软件连接对话框 */}
+      <AnimatePresence>
+        {showCustomDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowCustomDialog(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl"
+            >
+              <h3 className="text-[16px] font-bold text-[#1D1D1F] mb-4">连接自定义软件</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-[12px] font-semibold text-[#1D1D1F] mb-1.5 block">
+                    软件名称 *
+                  </label>
+                  <input
+                    type="text"
+                    value={customSoftware.name}
+                    onChange={(e) => setCustomSoftware({ ...customSoftware, name: e.target.value })}
+                    placeholder="例如：我的CRM系统"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#E8E8ED] text-[13px] focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/10"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[12px] font-semibold text-[#1D1D1F] mb-1.5 block">
+                    软件路径（可选）
+                  </label>
+                  <input
+                    type="text"
+                    value={customSoftware.path}
+                    onChange={(e) => setCustomSoftware({ ...customSoftware, path: e.target.value })}
+                    placeholder="例如：C:\\Program Files\\MyApp\\app.exe"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#E8E8ED] text-[13px] focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/10"
+                  />
+                  <p className="text-[10px] text-[#86868B] mt-1">桌面应用的完整路径</p>
+                </div>
+
+                <div>
+                  <label className="text-[12px] font-semibold text-[#1D1D1F] mb-1.5 block">
+                    进程名称（可选）
+                  </label>
+                  <input
+                    type="text"
+                    value={customSoftware.processName}
+                    onChange={(e) => setCustomSoftware({ ...customSoftware, processName: e.target.value })}
+                    placeholder="例如：MyApp.exe"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#E8E8ED] text-[13px] focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/10"
+                  />
+                  <p className="text-[10px] text-[#86868B] mt-1">用于检测软件是否已运行</p>
+                </div>
+
+                <div>
+                  <label className="text-[12px] font-semibold text-[#1D1D1F] mb-1.5 block">
+                    Web URL（可选）
+                  </label>
+                  <input
+                    type="text"
+                    value={customSoftware.url}
+                    onChange={(e) => setCustomSoftware({ ...customSoftware, url: e.target.value })}
+                    placeholder="例如：https://app.example.com"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#E8E8ED] text-[13px] focus:outline-none focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/10"
+                  />
+                  <p className="text-[10px] text-[#86868B] mt-1">Web应用的URL地址</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowCustomDialog(false)}
+                  className="flex-1 h-11 rounded-xl border border-[#E8E8ED] text-[13px] font-bold text-[#86868B] hover:bg-[#F5F5F7] transition-colors"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={() => {
+                    if (customSoftware.name.trim()) {
+                      // 连接自定义软件
+                      const customId = `custom_${Date.now()}`;
+                      setCustomSoftware({ ...customSoftware, id: customId });
+                      
+                      // 如果是Electron环境，尝试启动软件
+                      if (typeof window !== 'undefined' && (window as any).require) {
+                        const { ipcRenderer } = (window as any).require('electron');
+                        if (customSoftware.path) {
+                          ipcRenderer.send('launch-app', customSoftware.path);
+                        } else if (customSoftware.url) {
+                          ipcRenderer.send('open-url', customSoftware.url);
+                        }
+                      }
+                      
+                      onDemoSelect("custom");
+                      setShowCustomDialog(false);
+                      setCurrentStep(1);
+                    }
+                  }}
+                  disabled={!customSoftware.name.trim()}
+                  className={cn(
+                    "flex-1 h-11 rounded-xl text-[13px] font-bold transition-all",
+                    customSoftware.name.trim()
+                      ? "bg-[#007AFF] text-white hover:bg-[#0063CE]"
+                      : "bg-[#E8E8ED] text-[#86868B] cursor-not-allowed"
+                  )}
+                >
+                  连接
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
