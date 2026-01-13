@@ -12,12 +12,26 @@ import {
   CheckCircle2,
   ArrowRight,
   Eye,
-  PlayCircle
+  PlayCircle,
+  Video,
+  Image,
+  FileText as NotionIcon,
+  Building2,
+  BarChart3,
+  CheckSquare,
+  Users,
+  Database,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
 
-type DemoType = "ide" | "reddit" | "figma";
+// C端软件
+type ConsumerDemoType = "ide" | "reddit" | "figma" | "premiere" | "photoshop" | "notion";
+// B端软件
+type BusinessDemoType = "salesforce" | "tableau" | "jira" | "slack" | "sap" | "hubspot";
+// 所有软件类型
+type DemoType = ConsumerDemoType | BusinessDemoType;
 type TaskType = "basic" | "advanced";
 
 interface Task {
@@ -34,10 +48,30 @@ interface GuidanceFlowProps {
   onStart: (taskType?: TaskType, taskId?: string, steps?: string[]) => void;
 }
 
-const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string }> = {
+// C端软件信息
+const CONSUMER_DEMOS: Record<ConsumerDemoType, { name: string; icon: any; color: string }> = {
   ide: { name: "PyCharm", icon: Code, color: "#21D789" },
   reddit: { name: "Reddit", icon: MessageSquare, color: "#FF4500" },
   figma: { name: "Figma", icon: Palette, color: "#A259FF" },
+  premiere: { name: "Premiere Pro", icon: Video, color: "#EA77FF" },
+  photoshop: { name: "Photoshop", icon: Image, color: "#31A8FF" },
+  notion: { name: "Notion", icon: NotionIcon, color: "#000000" },
+};
+
+// B端软件信息
+const BUSINESS_DEMOS: Record<BusinessDemoType, { name: string; icon: any; color: string }> = {
+  salesforce: { name: "Salesforce", icon: Target, color: "#00A1E0" },
+  tableau: { name: "Tableau", icon: BarChart3, color: "#E97627" },
+  jira: { name: "Jira", icon: CheckSquare, color: "#0052CC" },
+  slack: { name: "Slack", icon: Users, color: "#4A154B" },
+  sap: { name: "SAP", icon: Database, color: "#0070F2" },
+  hubspot: { name: "HubSpot", icon: Building2, color: "#FF7A59" },
+};
+
+// 合并所有软件信息
+const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string }> = {
+  ...CONSUMER_DEMOS,
+  ...BUSINESS_DEMOS,
 };
 
 const ADVANCED_TASKS: Record<DemoType, Task[]> = {
@@ -315,30 +349,71 @@ export const GuidanceFlow = ({
             className="space-y-5"
           >
             <p className="text-[13px] font-bold text-[#1D1D1F] mb-4">选择目标软件</p>
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              {(Object.keys(DEMO_INFO) as DemoType[]).map((demo) => {
-                const info = DEMO_INFO[demo];
-                const Icon = info.icon;
-                return (
-                  <button
-                    key={demo}
-                    onClick={() => {
-                      onDemoSelect(demo);
-                      setSelectedTask(null);
-                      setTaskType("basic");
-                    }}
-                    className={cn(
-                      "flex flex-col items-center gap-2 p-4 rounded-xl transition-all",
-                      currentDemo === demo
-                        ? "bg-[#007AFF] text-white"
-                        : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
-                    )}
-                  >
-                    <Icon className="w-6 h-6" />
-                    <span className="text-[11px] font-bold">{info.name}</span>
-                  </button>
-                );
-              })}
+            
+            {/* C端软件 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-[#007AFF] rounded-full" />
+                <p className="text-[11px] font-bold text-[#86868B] uppercase tracking-wider">C端软件</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(CONSUMER_DEMOS) as ConsumerDemoType[]).map((demo) => {
+                  const info = CONSUMER_DEMOS[demo];
+                  const Icon = info.icon;
+                  return (
+                    <button
+                      key={demo}
+                      onClick={() => {
+                        onDemoSelect(demo);
+                        setSelectedTask(null);
+                        setTaskType("basic");
+                      }}
+                      className={cn(
+                        "flex flex-col items-center gap-2 p-3 rounded-xl transition-all",
+                        currentDemo === demo
+                          ? "bg-[#007AFF] text-white"
+                          : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                      )}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="text-[10px] font-bold text-center leading-tight">{info.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* B端软件 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-[#007AFF] rounded-full" />
+                <p className="text-[11px] font-bold text-[#86868B] uppercase tracking-wider">B端软件</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(BUSINESS_DEMOS) as BusinessDemoType[]).map((demo) => {
+                  const info = BUSINESS_DEMOS[demo];
+                  const Icon = info.icon;
+                  return (
+                    <button
+                      key={demo}
+                      onClick={() => {
+                        onDemoSelect(demo);
+                        setSelectedTask(null);
+                        setTaskType("basic");
+                      }}
+                      className={cn(
+                        "flex flex-col items-center gap-2 p-3 rounded-xl transition-all",
+                        currentDemo === demo
+                          ? "bg-[#007AFF] text-white"
+                          : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                      )}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="text-[10px] font-bold text-center leading-tight">{info.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 任务类型选择 */}

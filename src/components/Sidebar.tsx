@@ -28,7 +28,12 @@ import { UploadedDoc } from "./KnowledgeUpload";
 import { GuidanceFlow } from "./GuidanceFlow";
 import { ChatMessage } from "./ChatMessage";
 
-type DemoType = "ide" | "reddit" | "figma";
+// C端软件
+type ConsumerDemoType = "ide" | "reddit" | "figma" | "premiere" | "photoshop" | "notion";
+// B端软件
+type BusinessDemoType = "salesforce" | "tableau" | "jira" | "slack" | "sap" | "hubspot";
+// 所有软件类型
+type DemoType = ConsumerDemoType | BusinessDemoType;
 type TabType = "guidance" | "chat";
 
 interface Message {
@@ -51,10 +56,30 @@ interface SidebarProps {
   generatedSteps?: string[];
 }
 
+// C端软件信息
+const CONSUMER_DEMOS: Record<ConsumerDemoType, { name: string; icon: any; color: string; description: string }> = {
+  ide: { name: "PyCharm", icon: Code, color: "#21D789", description: "代码开发" },
+  reddit: { name: "Reddit", icon: MessageSquare, color: "#FF4500", description: "社区互动" },
+  figma: { name: "Figma", icon: Palette, color: "#A259FF", description: "UI设计" },
+  premiere: { name: "Premiere Pro", icon: Video, color: "#EA77FF", description: "视频剪辑" },
+  photoshop: { name: "Photoshop", icon: Image, color: "#31A8FF", description: "图像处理" },
+  notion: { name: "Notion", icon: NotionIcon, color: "#000000", description: "知识管理" },
+};
+
+// B端软件信息
+const BUSINESS_DEMOS: Record<BusinessDemoType, { name: string; icon: any; color: string; description: string }> = {
+  salesforce: { name: "Salesforce", icon: Target, color: "#00A1E0", description: "CRM系统" },
+  tableau: { name: "Tableau", icon: BarChart3, color: "#E97627", description: "数据分析" },
+  jira: { name: "Jira", icon: CheckSquare, color: "#0052CC", description: "项目管理" },
+  slack: { name: "Slack", icon: Users, color: "#4A154B", description: "团队协作" },
+  sap: { name: "SAP", icon: Database, color: "#0070F2", description: "ERP系统" },
+  hubspot: { name: "HubSpot", icon: Building2, color: "#FF7A59", description: "营销自动化" },
+};
+
+// 合并所有软件信息
 const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string; description: string }> = {
-  ide: { name: "PyCharm", icon: Code, color: "#21D789", description: "代码开发引导" },
-  reddit: { name: "Reddit", icon: MessageSquare, color: "#FF4500", description: "社区互动引导" },
-  figma: { name: "Figma", icon: Palette, color: "#A259FF", description: "设计工具引导" },
+  ...CONSUMER_DEMOS,
+  ...BUSINESS_DEMOS,
 };
 
 const STEP_MESSAGES: Record<DemoType, Record<number, string>> = {
