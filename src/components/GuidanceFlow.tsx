@@ -18,6 +18,14 @@ import { cn } from "@/lib/utils";
 import { UploadedDoc } from "./KnowledgeUpload";
 
 type DemoType = "ide" | "reddit" | "figma";
+type TaskType = "basic" | "advanced";
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  steps: string[];
+}
 
 interface GuidanceFlowProps {
   documents: UploadedDoc[];
@@ -32,7 +40,94 @@ const DEMO_INFO: Record<DemoType, { name: string; icon: any; color: string }> = 
   figma: { name: "Figma", icon: Palette, color: "#A259FF" },
 };
 
-const GENERATED_STEPS: Record<DemoType, string[]> = {
+const ADVANCED_TASKS: Record<DemoType, Task[]> = {
+  ide: [
+    {
+      id: "build-api",
+      title: "构建 RESTful API",
+      description: "从零开始构建完整的 API 服务",
+      steps: [
+        "创建 Flask 项目结构",
+        "定义数据模型和数据库连接",
+        "实现用户认证中间件",
+        "创建 RESTful 路由和控制器",
+        "编写 API 文档和测试用例",
+        "部署到生产环境"
+      ]
+    },
+    {
+      id: "debug-complex",
+      title: "调试复杂错误",
+      description: "系统化排查和修复生产环境问题",
+      steps: [
+        "分析错误日志和堆栈跟踪",
+        "使用调试器设置断点",
+        "检查依赖版本兼容性",
+        "运行单元测试定位问题",
+        "修复并验证解决方案",
+        "编写回归测试防止复发"
+      ]
+    }
+  ],
+  reddit: [
+    {
+      id: "gain-followers",
+      title: "积累 1000 粉丝",
+      description: "系统化策略在 Reddit 建立影响力",
+      steps: [
+        "选择 3-5 个垂直社区专注深耕",
+        "每天发布高质量原创内容",
+        "在热门帖子下发表深度评论",
+        "与其他用户建立真实互动",
+        "分析数据优化发布时间和内容",
+        "持续 3-6 个月建立个人品牌"
+      ]
+    },
+    {
+      id: "become-mod",
+      title: "成为社区版主",
+      description: "通过贡献获得社区认可",
+      steps: [
+        "选择目标社区并深度参与",
+        "定期发布有价值的内容",
+        "帮助新用户解答问题",
+        "举报违规内容维护社区",
+        "参与社区讨论和决策",
+        "申请版主职位并展示贡献"
+      ]
+    }
+  ],
+  figma: [
+    {
+      id: "become-expert",
+      title: "成为设计专家",
+      description: "从入门到精通的完整路径",
+      steps: [
+        "学习设计系统基础理论",
+        "掌握 Figma 高级功能（组件、变体、自动布局）",
+        "完成 10 个真实项目案例",
+        "建立个人设计作品集",
+        "学习用户研究和交互设计",
+        "参与设计社区并分享经验"
+      ]
+    },
+    {
+      id: "design-system",
+      title: "构建企业级设计系统",
+      description: "创建可扩展的设计规范",
+      steps: [
+        "定义设计原则和品牌规范",
+        "创建基础组件库（按钮、输入框等）",
+        "建立组件变体和状态系统",
+        "编写设计文档和使用指南",
+        "与开发团队协作实现",
+        "持续迭代和维护系统"
+      ]
+    }
+  ],
+};
+
+const BASIC_TASKS: Record<DemoType, string[]> = {
   ide: [
     "打开 PyCharm 项目",
     "定位 login_view.py 文件",
@@ -63,6 +158,8 @@ export const GuidanceFlow = ({
   onStart
 }: GuidanceFlowProps) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskType, setTaskType] = useState<TaskType>("basic");
   const [generatedSteps, setGeneratedSteps] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -74,15 +171,21 @@ export const GuidanceFlow = ({
         setIsGenerating(true);
         // 模拟 AI 生成过程
         const timer = setTimeout(() => {
-          setGeneratedSteps(GENERATED_STEPS[currentDemo]);
+          // 如果还没有选择任务，使用基础任务
+          if (!selectedTask && taskType === "basic") {
+            setGeneratedSteps(BASIC_TASKS[currentDemo]);
+          }
           setIsGenerating(false);
           // 自动进入下一步
           setCurrentStep(3);
         }, 2000);
         return () => clearTimeout(timer);
+      } else if (generatedSteps.length > 0) {
+        // 如果已经有步骤，直接进入下一步
+        setCurrentStep(3);
       }
     }
-  }, [currentStep, currentDemo]); // 简化依赖，只监听关键状态
+  }, [currentStep, currentDemo, selectedTask, taskType, generatedSteps.length, isGenerating]);
 
   const demoInfo = DEMO_INFO[currentDemo];
 
@@ -162,10 +265,10 @@ export const GuidanceFlow = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-4"
+            className="space-y-5"
           >
-            <p className="text-[13px] font-bold text-[#1D1D1F] mb-3">选择目标软件</p>
-            <div className="grid grid-cols-3 gap-2">
+            <p className="text-[13px] font-bold text-[#1D1D1F] mb-4">选择目标软件</p>
+            <div className="grid grid-cols-3 gap-2 mb-5">
               {(Object.keys(DEMO_INFO) as DemoType[]).map((demo) => {
                 const info = DEMO_INFO[demo];
                 const Icon = info.icon;
@@ -174,7 +277,8 @@ export const GuidanceFlow = ({
                     key={demo}
                     onClick={() => {
                       onDemoSelect(demo);
-                      setCurrentStep(2);
+                      setSelectedTask(null);
+                      setTaskType("basic");
                     }}
                     className={cn(
                       "flex flex-col items-center gap-2 p-4 rounded-xl transition-all",
@@ -188,6 +292,81 @@ export const GuidanceFlow = ({
                   </button>
                 );
               })}
+            </div>
+
+            {/* 任务类型选择 */}
+            <div className="space-y-3">
+              <p className="text-[12px] font-bold text-[#86868B] uppercase tracking-wider">选择任务类型</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setTaskType("basic");
+                    setSelectedTask(null);
+                  }}
+                  className={cn(
+                    "flex-1 h-10 rounded-xl text-[12px] font-bold transition-all",
+                    taskType === "basic"
+                      ? "bg-[#007AFF] text-white"
+                      : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                  )}
+                >
+                  基础任务
+                </button>
+                <button
+                  onClick={() => {
+                    setTaskType("advanced");
+                    setSelectedTask(null);
+                  }}
+                  className={cn(
+                    "flex-1 h-10 rounded-xl text-[12px] font-bold transition-all",
+                    taskType === "advanced"
+                      ? "bg-[#007AFF] text-white"
+                      : "bg-[#F5F5F7] text-[#86868B] hover:bg-[#E8E8ED]"
+                  )}
+                >
+                  复杂任务
+                </button>
+              </div>
+
+              {/* 任务选择 */}
+              {taskType === "basic" ? (
+                <button
+                  onClick={() => {
+                    setGeneratedSteps(BASIC_TASKS[currentDemo]);
+                    setCurrentStep(2);
+                  }}
+                  className="w-full h-12 bg-[#007AFF] text-white rounded-xl text-[13px] font-bold hover:bg-[#0063CE] transition-all"
+                >
+                  使用基础任务
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  {ADVANCED_TASKS[currentDemo].map((task) => (
+                    <button
+                      key={task.id}
+                      onClick={() => {
+                        setSelectedTask(task);
+                        setGeneratedSteps(task.steps);
+                        setCurrentStep(2);
+                      }}
+                      className={cn(
+                        "w-full p-4 rounded-xl border text-left transition-all",
+                        selectedTask?.id === task.id
+                          ? "bg-[#007AFF] text-white border-[#007AFF]"
+                          : "bg-white border-black/[0.05] hover:border-[#007AFF]/30"
+                      )}
+                    >
+                      <div className="font-bold text-[13px] mb-1">{task.title}</div>
+                      <div className={cn(
+                        "text-[11px]",
+                        selectedTask?.id === task.id ? "text-white/80" : "text-[#86868B]"
+                      )}>
+                        {task.description}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -238,7 +417,11 @@ export const GuidanceFlow = ({
             {!isGenerating && generatedSteps.length === 0 && (
               <button
                 onClick={() => {
-                  setGeneratedSteps(GENERATED_STEPS[currentDemo]);
+                  if (selectedTask) {
+                    setGeneratedSteps(selectedTask.steps);
+                  } else {
+                    setGeneratedSteps(BASIC_TASKS[currentDemo]);
+                  }
                   setCurrentStep(3);
                 }}
                 className="w-full h-10 bg-[#007AFF] text-white rounded-xl text-[12px] font-bold hover:bg-[#0063CE] transition-colors"
